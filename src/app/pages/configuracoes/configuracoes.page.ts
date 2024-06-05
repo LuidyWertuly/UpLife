@@ -106,4 +106,64 @@ export class ConfiguracoesPage implements OnInit {
     }
   }
 
+  deletarConta() {
+    this.afAuth.currentUser.then(user => {
+      if (user) {
+        // Obtém os dados do usuário do Firestore
+        this.firestore.collection('users', ref => ref.where('user_id', '==', user.uid)).get().subscribe(snapshot => {
+          if (!snapshot.empty) {
+            const doc = snapshot.docs[0];
+            const data: any = doc.data();
+  
+            // Verifica se o campo fotoPerfil está presente nos dados do usuário
+            if (data && data.fotoPerfil) {
+              // Exclui a foto de perfil do Firebase Storage
+              this.storage.refFromURL(data.fotoPerfil).delete().toPromise().then(() => {
+                console.log('Foto de perfil excluída com sucesso.');
+  
+                // Exclui conta de autenticação
+                user.delete().then(() => {
+                  console.log('Conta de autenticação excluída com sucesso.');
+                  // Exclui dados do Firestore associados ao usuário
+                  doc.ref.delete().then(() => {
+                    console.log('Dados do Firestore excluídos com sucesso.');
+                    // Redirecionar para a página de login
+                    this.router.navigate(['/inicial']); // Altere para a página de login
+                  }).catch(error => {
+                    console.error('Erro ao excluir dados do Firestore:', error);
+                  });
+                }).catch(error => {
+                  if (error.code === 'auth/requires-recent-login') {
+                    // Redirecionar para a página de login
+                    this.router.navigate(['/login']); // Altere para a página de login
+                  } else {
+                    console.error('Erro ao excluir conta de autenticação:', error);
+                  }
+                });
+              }).catch(error => {
+                console.error('Erro ao excluir foto de perfil:', error);
+              });
+            } else {
+              console.log('Campo fotoPerfil não encontrado nos dados do usuário.');
+            }
+          } else {
+            console.log('Documento do usuário não encontrado.');
+          }
+        }, error => {
+          console.error('Erro ao buscar documento do usuário:', error);
+        });
+      } else {
+        console.error('Nenhum usuário autenticado.');
+      }
+    }).catch(error => {
+      console.error('Erro ao obter o usuário atual:', error);
+    });
+  }
+  
+
+
+  sairConta(){
+    
+  }
+
 }

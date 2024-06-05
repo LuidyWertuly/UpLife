@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { Location } from '@angular/common';
 import { Router } from '@angular/router';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { HttpClient } from '@angular/common/http';
@@ -14,7 +15,7 @@ export class LoginPage implements OnInit {
 
   loginForm: FormGroup;
 
-  constructor(private router: Router, private formBuilder: FormBuilder, private http: HttpClient, private afAuth: AngularFireAuth){
+  constructor(private location: Location, private router: Router, private formBuilder: FormBuilder, private http: HttpClient, private afAuth: AngularFireAuth){
 
     this.loginForm = this.formBuilder.group({
       email: ['', [Validators.required, Validators.email]],
@@ -29,7 +30,7 @@ export class LoginPage implements OnInit {
   }
 
   Voltarpagina(){
-    this.router.navigate(['home']);
+    this.location.back();
   }
 
   irParaRegistro(){
