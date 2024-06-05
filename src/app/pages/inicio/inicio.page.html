@@ -1,0 +1,70 @@
+<ion-header>
+    <ion-item>
+      
+    <ion-button fill="clear" class="icon" (click)="IrparaConfig()">
+      <ion-avatar>
+        <img alt="Foto de perfil" [src]="fotoperfil" />
+      </ion-avatar>
+    </ion-button>
+    
+    <ion-title class="titulo">Início</ion-title>
+
+    <ion-button fill="clear" class="icon" disabled>
+      <ion-icon name="cog-sharp" class="oculto"></ion-icon>
+    </ion-button>
+
+  </ion-item>
+</ion-header>
+
+<ion-content>
+
+  <ion-card>
+    <ion-card-header>
+      <ion-card-title>Debug</ion-card-title>
+    </ion-card-header>
+  
+    <ion-button (click)="IrparaRegistro()">Registrar</ion-button>
+    <ion-button (click)="IrparaLogin()">Entrar</ion-button>
+    <ion-button (click)="IrparaMaisInfo()">Mais informações</ion-button>
+    <ion-button (click)="IrparaInicial()">Inicial</ion-button>
+  </ion-card>
+
+  <ion-card>
+    <ion-card-header>
+      <ion-card-title>Passos Diarios</ion-card-title>
+      <ion-card-subtitle>27/05/2024</ion-card-subtitle>
+    </ion-card-header>
+  
+    <ion-card-content>
+      48 Passos
+    </ion-card-content>
+  </ion-card>
+
+  <ion-card>
+    <ion-card-header>
+      <ion-card-title>Ingestão Restante</ion-card-title>
+    </ion-card-header>
+  
+    <ion-card-content>
+      Calorias | Proteinas <br />
+      Gordura | Carboidratos
+    </ion-card-content>
+  
+    <ion-button fill="clear">Adicionar</ion-button>
+    <ion-button fill="clear">Historico</ion-button>
+  </ion-card>
+
+  <ion-card>
+    <ion-card-header>
+      <ion-card-title>Ultima Corrida</ion-card-title>
+      <ion-card-subtitle>20/05/2024 (7 dias atras)</ion-card-subtitle>
+    </ion-card-header>
+  
+    <ion-card-content>
+      ultimo Historico registrado
+    </ion-card-content>
+  
+    <ion-button fill="clear">Treinar</ion-button>
+    <ion-button fill="clear">Historico</ion-button>
+  </ion-card>
+</ion-content>

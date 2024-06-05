@@ -1,0 +1,27 @@
+npm install angular-freezeframe
+
+
+traduza para português-brasileiro mantendo o contexto de academia, nao traduza as seguintes partes : 
+
+
+ {
+        "bodypart":"",
+        "equipment":"",
+        "gifUrl":"",
+        "id":"",
+        "name":"",
+        "target":"",
+        "secondaryMuscles":[
+            "",
+            ""
+        ],
+        "instructions":[
+            "",
+            "",
+            "",
+            "",
+            ""
+        ]
+    },
+
+agora traduza o que está em baixo e coloque no formato json 

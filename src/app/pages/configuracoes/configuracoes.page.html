@@ -1,0 +1,88 @@
+<ion-header>
+    <ion-item>
+      
+    <ion-button fill="clear" class="icon" (click)="Voltarpagina()">
+      <ion-icon name="arrow-back-sharp"></ion-icon>
+    </ion-button>
+    
+    <ion-title class="titulo">Configurações</ion-title>
+
+    <ion-button fill="clear" class="icon" disabled>
+      <ion-icon name="add-sharp" class="oculto"></ion-icon>
+    </ion-button>
+
+  </ion-item>
+</ion-header>
+
+<ion-content>
+  <ion-grid >
+    <ion-col class="avatar">
+      <ion-avatar (click)="alterarFoto()">
+        <img alt="Foto de perfil" [src]="fotoperfil" />
+      </ion-avatar>
+      <br/>
+      <ion-title>Nome de Usuário</ion-title>
+      <input type="file" accept="image/*" #fileInput (change)="onFileSelected($event)" hidden>
+    </ion-col>
+    
+    <ion-col>
+      <ion-button expand="full">Editar conta</ion-button>
+    </ion-col>
+  </ion-grid>
+
+  <ion-grid>
+    <ion-col>
+      <ion-title class="titulo">Aparência</ion-title>
+    </ion-col>
+
+      <ion-col>
+        <ion-radio-group [(ngModel)]="temaSelecionado" class="temaEscuro">
+          <ion-col class="temas" (click)="mudarTema('claro')">
+            <ion-icon name="sunny-sharp"></ion-icon>
+            <br/>
+            <ion-radio value="claro" labelPlacement="stacked">Tema claro</ion-radio>
+          </ion-col>
+
+          <ion-col class="temas" (click)="mudarTema('escuro')">
+            <ion-icon name="moon-sharp"></ion-icon>
+            <br/>
+            <ion-radio value="escuro" labelPlacement="stacked">Tema escuro</ion-radio>
+          </ion-col>
+        </ion-radio-group>
+      </ion-col>
+  </ion-grid>
+
+  <ion-grid>
+    <ion-col>
+      <ion-title class="titulo">Fonte</ion-title>
+    </ion-col>
+    
+    <ion-col>
+      <ion-button expand="full">Padrão</ion-button>
+      <ion-button expand="full">Grande</ion-button>
+      <ion-button expand="full">Muito grande</ion-button>
+    </ion-col>
+  </ion-grid>
+
+  <ion-grid>
+    <ion-col>
+      <ion-title class="titulo">Corrida</ion-title>
+    </ion-col>
+    
+    <ion-col>
+      <ion-button expand="full" (click)="IrparaConfigCorrida()">Configurações de corrida</ion-button>
+    </ion-col>
+  </ion-grid>
+
+  <ion-grid>
+    <ion-col>
+      <ion-title class="titulo">Ações</ion-title>
+    </ion-col>
+
+    <ion-col>
+      <ion-button expand="full">Deletar conta</ion-button>
+      <ion-button expand="full">Sair</ion-button>
+    </ion-col>
+  </ion-grid>
+
+</ion-content>
