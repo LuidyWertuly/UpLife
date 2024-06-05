@@ -17,6 +17,8 @@ export class ConfiguracoesPage implements OnInit {
 
   temaSelecionado: string = 'claro';
 
+  nomeUsuario: string = '';
+
   @ViewChild('fileInput', { static: false }) fileInput!: ElementRef;
 
   constructor(private location: Location, private router: Router, private firestore: AngularFirestore, private afAuth: AngularFireAuth, private storage: AngularFireStorage) { }
@@ -24,37 +26,34 @@ export class ConfiguracoesPage implements OnInit {
   ngOnInit() {
     
     this.afAuth.authState.subscribe(user => {
-      
       if (user) {
         this.firestore.collection('users', ref => ref.where('user_id', '==', user.uid)).get().subscribe(snapshot => {
           console.log('Autenticado');
-
+    
           if (!snapshot.empty) {
             const doc = snapshot.docs[0];
             const data: any = doc.data();
             console.log('Documento existe');
-
+    
+            if (data && data.nome) {
+              this.nomeUsuario = data.nome;
+            } else {
+              console.log('Campo nome não encontrado nos dados do usuário');
+            }
+    
             if (data && data.fotoPerfil) {
               this.fotoperfil = data.fotoPerfil;
-            } 
-            
-            else {
+            } else {
               console.log('Campo fotoPerfil não encontrado nos dados do usuário');
             }
-
-          } 
-          
-          else {
+          } else {
             console.log('Documento do usuário não encontrado');
           }
-
         }, error => {
           console.error('Erro ao buscar documento do usuário:', error);
         });
-
-      }
-      
-      else {
+    
+      } else {
         console.log('Usuário não autenticado');
       }
     }, error => {
@@ -75,6 +74,10 @@ export class ConfiguracoesPage implements OnInit {
     this.router.navigate(['config-corrida'])
   }
 
+  IrparaEditarConta(){
+    this.router.navigate(['editar-conta'])
+  }
+
   alterarFoto() {
     this.fileInput.nativeElement.click();
   }
@@ -82,7 +85,7 @@ export class ConfiguracoesPage implements OnInit {
   onFileSelected(event: any) {
     const file: File = event.target.files[0];
     if (file) {
-      const filePath = `profile_pictures/${new Date().getTime()}_${file.name}`;
+      const filePath = `fotosPerfil/${new Date().getTime()}_${file.name}`;
       const fileRef = this.storage.ref(filePath);
       const uploadTask = this.storage.upload(filePath, file);
 
@@ -160,10 +163,14 @@ export class ConfiguracoesPage implements OnInit {
     });
   }
   
-
-
   sairConta(){
-    
+    this.afAuth.signOut().then(() => {
+      console.log('Usuário desconectado com sucesso.');
+      // Redirecionar para a página de login ou página inicial
+      this.router.navigate(['/inicial']); // Altere para a página desejada
+    }).catch(error => {
+      console.error('Erro ao desconectar o usuário:', error);
+    });
   }
 
 }

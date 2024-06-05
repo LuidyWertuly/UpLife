@@ -71,6 +71,10 @@ const routes: Routes = [
     path: 'historico-alimentacao',
     loadChildren: () => import('./pages/historico-alimentacao/historico-alimentacao.module').then( m => m.HistoricoAlimentacaoPageModule)
   },
+  {
+    path: 'editar-conta',
+    loadChildren: () => import('./pages/editar-conta/editar-conta.module').then( m => m.EditarContaPageModule)
+  },
 
 
 ];

@@ -21,12 +21,12 @@
         <img alt="Foto de perfil" [src]="fotoperfil" />
       </ion-avatar>
       <br/>
-      <ion-title>Nome de Usuário</ion-title>
+      <ion-title>{{ nomeUsuario }}</ion-title>
       <input type="file" accept="image/*" #fileInput (change)="onFileSelected($event)" hidden>
     </ion-col>
     
     <ion-col>
-      <ion-button expand="full">Editar conta</ion-button>
+      <ion-button expand="full" (click)="IrparaEditarConta()">Editar conta</ion-button>
     </ion-col>
   </ion-grid>
 
