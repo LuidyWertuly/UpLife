@@ -20,6 +20,7 @@ export class LoginPage implements OnInit {
     this.loginForm = this.formBuilder.group({
       email: ['', [Validators.required, Validators.email]],
       senha: ['', Validators.required],
+      manter: [false]
     }) 
 
     this.errorMessage = '';
@@ -45,9 +46,17 @@ export class LoginPage implements OnInit {
 
   async onSubmit() {
     if (this.loginForm.valid) {
-      const { email, senha } = this.loginForm.value;
+      const { email, senha, manter } = this.loginForm.value;
   
       try {
+
+        // Definir a persistência de sessão com base no checkbox
+        if (manter) {
+          await this.afAuth.setPersistence('local');
+        } else {
+          await this.afAuth.setPersistence('session');
+        }
+
         const userCredential = await this.afAuth.signInWithEmailAndPassword(email, senha);
   
         if (userCredential) {

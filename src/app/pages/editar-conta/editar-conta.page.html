@@ -1,13 +1,124 @@
-<ion-header [translucent]="true">
-  <ion-toolbar>
-    <ion-title>editarConta</ion-title>
-  </ion-toolbar>
+<ion-header>
+  <ion-item>
+    
+    <ion-button fill="clear" class="icon" (click)="Voltarpagina()">
+      <ion-icon name="arrow-back-sharp"></ion-icon>
+    </ion-button>
+    
+    <ion-title class="titulo">Editar Conta</ion-title>
+
+    <ion-button fill="clear" class="icon" disabled>
+      <ion-icon name="add-sharp" class="oculto"></ion-icon>
+    </ion-button>
+
+  </ion-item>
 </ion-header>
 
-<ion-content [fullscreen]="true">
-  <ion-header collapse="condense">
-    <ion-toolbar>
-      <ion-title size="large">editarConta</ion-title>
-    </ion-toolbar>
-  </ion-header>
+<ion-content>
+
+  <ion-grid class="main">
+
+    <form class="formulario">
+
+      <ion-col>
+        <ion-title>Nome</ion-title>
+      </ion-col>
+
+      <ion-col>
+        <ion-input type="text" fill="outline" placeholder="Nome de Usuário"></ion-input>
+      </ion-col>
+
+      <ion-col>
+        <ion-title>Email</ion-title>
+      </ion-col>
+
+      <ion-col>
+        <ion-input type="email" fill="outline" placeholder="Seu email"></ion-input>
+      </ion-col>
+
+      <ion-col>
+        <ion-title>Data de nascimento</ion-title>
+      </ion-col>
+
+      <ion-col>
+        <ion-input type="date" fill="outline"></ion-input>
+      </ion-col>
+
+      <ion-col>
+        <ion-title>Senha</ion-title>
+      </ion-col>
+
+      <ion-col>
+        <ion-input type="password" fill="outline" placeholder="Senha">
+          <ion-input-password-toggle slot="end"></ion-input-password-toggle>
+        </ion-input>
+      </ion-col>
+
+      <ion-col>
+        <ion-title>Sexo</ion-title>
+      </ion-col>
+
+      <ion-item class="opcoes">
+
+        <ion-radio-group value="sexo">
+          <ion-radio labelPlacement="end" justify="start" value="masculino">Masculino</ion-radio> <br/>
+          <ion-radio labelPlacement="end" justify="start" value="feminino">Feminino</ion-radio> <br/>
+        </ion-radio-group>
+
+      </ion-item>
+    
+      <ion-col>
+        <ion-title>Altura</ion-title>
+      </ion-col>
+
+      <ion-col>
+        <ion-input type="number" fill="outline" placeholder="Altura | M"></ion-input>
+      </ion-col>
+
+
+      <ion-col>
+        <ion-title>Peso</ion-title>
+      </ion-col>
+
+      <ion-col>
+        <ion-input type="number" fill="outline" placeholder="Peso | Kg"></ion-input>
+      </ion-col>
+      
+      <ion-col>
+        <ion-title>Atividades</ion-title>
+      </ion-col>
+
+      <ion-item class="opcoes">
+
+        <ion-radio-group value="atividade">
+          <ion-radio labelPlacement="end" justify="start" value="sedentario">Sedentário</ion-radio> <br/>
+          <ion-radio labelPlacement="end" justify="start" value="moderadamenteAtivo">Moderadamente ativo</ion-radio> <br/>
+          <ion-radio labelPlacement="end" justify="start" value="extremamenteAtivo">Extremamente ativo</ion-radio> <br/>
+        </ion-radio-group>
+
+      </ion-item>
+
+      <ion-col>
+        <ion-title>Objetivo</ion-title>
+      </ion-col>
+
+      <ion-item class="opcoes">
+
+        <ion-radio-group value="objetivo">
+          <ion-radio labelPlacement="end" justify="start" value="perderPeso">Perder peso</ion-radio> <br/>
+          <ion-radio labelPlacement="end" justify="start" value="manterPeso">Manter peso</ion-radio> <br/>
+          <ion-radio labelPlacement="end" justify="start" value="ganharPeso">Ganhar peso</ion-radio> <br/>
+        </ion-radio-group>
+
+      </ion-item>
+
+      <ion-col class="botoes">
+        <ion-button type="submit">Salvar</ion-button>
+        <ion-button type="submit">Cancelar</ion-button>
+      </ion-col>
+
+    </form>
+    
+  </ion-grid>
+  
 </ion-content>

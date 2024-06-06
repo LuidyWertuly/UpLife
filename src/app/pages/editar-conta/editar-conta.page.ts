@@ -1,4 +1,6 @@
 import { Component, OnInit } from '@angular/core';
+import { Location } from '@angular/common';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-editar-conta',
@@ -7,9 +9,13 @@ import { Component, OnInit } from '@angular/core';
 })
 export class EditarContaPage implements OnInit {
 
-  constructor() { }
+  constructor(private location: Location, private router: Router) { }
 
   ngOnInit() {
+  }
+
+  Voltarpagina(){
+    this.location.back();
   }
 
 }
