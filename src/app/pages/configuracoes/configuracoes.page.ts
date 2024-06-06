@@ -37,25 +37,35 @@ export class ConfiguracoesPage implements OnInit {
     
             if (data && data.nome) {
               this.nomeUsuario = data.nome;
-            } else {
+            } 
+            
+            else {
               console.log('Campo nome não encontrado nos dados do usuário');
             }
     
             if (data && data.fotoPerfil) {
               this.fotoperfil = data.fotoPerfil;
-            } else {
+            } 
+            
+            else {
               console.log('Campo fotoPerfil não encontrado nos dados do usuário');
             }
-          } else {
+          } 
+          
+          else {
             console.log('Documento do usuário não encontrado');
           }
+
         }, error => {
           console.error('Erro ao buscar documento do usuário:', error);
         });
     
-      } else {
+      } 
+      
+      else {
         console.log('Usuário não autenticado');
       }
+
     }, error => {
       console.error('Erro ao verificar estado de autenticação:', error);
     });
@@ -139,25 +149,37 @@ export class ConfiguracoesPage implements OnInit {
                   if (error.code === 'auth/requires-recent-login') {
                     // Redirecionar para a página de login
                     this.router.navigate(['/login']); // Altere para a página de login
-                  } else {
+                  } 
+                  
+                  else {
                     console.error('Erro ao excluir conta de autenticação:', error);
                   }
+
                 });
               }).catch(error => {
                 console.error('Erro ao excluir foto de perfil:', error);
               });
-            } else {
+            } 
+            
+            else {
               console.log('Campo fotoPerfil não encontrado nos dados do usuário.');
             }
-          } else {
+
+          } 
+          
+          else {
             console.log('Documento do usuário não encontrado.');
           }
+
         }, error => {
           console.error('Erro ao buscar documento do usuário:', error);
         });
-      } else {
+      } 
+      
+      else {
         console.error('Nenhum usuário autenticado.');
       }
+      
     }).catch(error => {
       console.error('Erro ao obter o usuário atual:', error);
     });

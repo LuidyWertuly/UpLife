@@ -60,20 +60,4 @@ export class InicioPage implements OnInit {
     this.router.navigate(['configuracoes'])
   }
 
-  IrparaRegistro(){
-    this.router.navigate(['registro'])
-  }
-
-  IrparaLogin(){
-    this.router.navigate(['login'])
-  }
-
-  IrparaMaisInfo(){
-    this.router.navigate(['mais-info'])
-  }
-
-  IrparaInicial(){
-    this.router.navigate(['inicial'])
-  }
-
 }
