@@ -21,7 +21,12 @@ export class MudarEmailPage implements OnInit {
     })
   }
 
-  ngOnInit() {
+  ngOnInit(){
+    this.afAuth.authState.subscribe(user => {
+      if (user && user.emailVerified) {
+        this.router.navigate(['/']);
+      }
+    });
   }
 
   Voltarpagina(){
@@ -40,31 +45,36 @@ export class MudarEmailPage implements OnInit {
 
   async onSubmit() {
     if (this.emailForm.valid) {
-      const email = this.emailForm.get('email')?.value;
-  
+      const newEmail = this.emailForm.get('email')?.value;
+
       try {
         const user = await this.afAuth.currentUser;
-        console.log('User:', user);
         if (user !== null) {
-          // Enviar e-mail de verificação para o novo endereço de e-mail
-          await user.updateEmail(email);
-          await user.sendEmailVerification();
-          
-          // Notificar o usuário para verificar o novo e-mail
-          this.presentAlert('Sucesso', 'Um e-mail de verificação foi enviado para o novo endereço de e-mail. Por favor, verifique sua caixa de entrada e siga as instruções.');
-  
-          // Atualizar o e-mail no Firestore, se necessário
-          const uid = user.uid;
-          await this.afs.collection('users').doc(uid).update({ email });
+          // Enviar e-mail de verificação para o novo e-mail
+          await user.verifyBeforeUpdateEmail(newEmail);
+
+          // Atualizar o e-mail no Firestore
+          await this.afs.collection('users').doc(user.uid).update({ email: newEmail });
+
+          // Informar o usuário que um e-mail de verificação foi enviado
+          this.presentAlert(
+            'Sucesso',
+            'Um e-mail de verificação foi enviado para o novo endereço de e-mail. Por favor, verifique sua caixa de entrada e siga as instruções.'
+          );
         } else {
-          console.error('currentUser é nulo');
-          this.presentAlert('Erro', 'Ocorreu um erro ao atualizar o endereço de e-mail. Por favor, tente novamente mais tarde.');
+          console.error('Usuário atual é nulo');
+          this.presentAlert(
+            'Erro',
+            'Ocorreu um erro ao atualizar o endereço de e-mail. Por favor, tente novamente mais tarde.'
+          );
         }
       } catch (error) {
         console.error('Erro ao atualizar o e-mail:', error);
-        this.presentAlert('Erro', 'Ocorreu um erro ao atualizar o endereço de e-mail. Por favor, tente novamente mais tarde.');
+        this.presentAlert(
+          'Erro',
+          'Ocorreu um erro ao atualizar o endereço de e-mail. Por favor, tente novamente mais tarde.'
+        );
       }
-  
     } else {
       this.emailForm.markAllAsTouched();
     }
