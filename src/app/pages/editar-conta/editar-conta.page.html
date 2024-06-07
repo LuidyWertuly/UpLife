@@ -37,21 +37,19 @@
       </ion-col>
 
       <ion-col>
+        <ion-title>Senha</ion-title>
+      </ion-col>
+
+      <ion-col>
+        <ion-button id="open-modal" expand="full">Mudar a senha</ion-button>
+      </ion-col>
+
+      <ion-col>
         <ion-title>Data de nascimento</ion-title>
       </ion-col>
 
       <ion-col>
         <ion-input type="date" fill="outline"></ion-input>
-      </ion-col>
-
-      <ion-col>
-        <ion-title>Senha</ion-title>
-      </ion-col>
-
-      <ion-col>
-        <ion-input type="password" fill="outline" placeholder="Senha">
-          <ion-input-password-toggle slot="end"></ion-input-password-toggle>
-        </ion-input>
       </ion-col>
 
       <ion-col>
@@ -120,5 +118,31 @@
     </form>
     
   </ion-grid>
+
+  <ion-modal #modal trigger="open-modal">
+    <ng-template>
+      <ion-content>
+        <ion-toolbar>
+          <ion-title>Confirmação</ion-title>
+          <ion-buttons slot="end">
+            <ion-button (click)="modal.dismiss()">
+              <ion-icon name="close-sharp"></ion-icon>
+            </ion-button>
+          </ion-buttons>
+        </ion-toolbar>
+        <ion-list>
+          <ion-item>
+            <ion-title class="titulo">
+              <p>Deseja salvar suas alterações?</p>
+            </ion-title>
+          </ion-item>
+          <ion-item class="modalButton">
+            <ion-button expand="full" (click)="confirmar(true)">Sim</ion-button>
+            <ion-button expand="full" (click)="confirmar(false)">Não</ion-button>
+          </ion-item>
+        </ion-list>
+      </ion-content>
+    </ng-template>
+  </ion-modal>
   
 </ion-content>
