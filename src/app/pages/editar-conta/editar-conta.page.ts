@@ -1,7 +1,10 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { Location } from '@angular/common';
 import { Router } from '@angular/router';
-import { IonModal } from '@ionic/angular';
+import { IonModal, ToastController } from '@ionic/angular';
+import { AngularFireAuth } from '@angular/fire/compat/auth';
+import { AngularFirestore } from '@angular/fire/compat/firestore';
+import { FormGroup, FormBuilder, Validators } from '@angular/forms';
 
 @Component({
   selector: 'app-editar-conta',
@@ -10,34 +13,132 @@ import { IonModal } from '@ionic/angular';
 })
 export class EditarContaPage implements OnInit {
 
-  @ViewChild(IonModal) modal!: IonModal;
+  @ViewChild('modal') modal!: IonModal;
 
-  constructor(private location: Location, private router: Router) { }
+  @ViewChild('senhaModal') senhaModal!: IonModal;
 
-  ngOnInit() {
+  @ViewChild('emailModal') emailModal!: IonModal;
+
+  userForm: FormGroup;
+
+  uid: string;
+
+  constructor(private location: Location, private router: Router, private afAuth: AngularFireAuth, private firestore: AngularFirestore, private fb: FormBuilder, private toastController: ToastController){
+    
+    this.userForm = this.fb.group({
+      nome: ['', Validators.required],
+      email: ['', [Validators.required, Validators.email]],
+      DTnascimento: ['', Validators.required],
+      sexo: ['', Validators.required],
+      altura: ['', Validators.required],
+      peso: ['', Validators.required],
+      atividade: ['', Validators.required],
+      objetivo: ['', Validators.required]
+    });
+
+    this.uid = '';
+
+  }
+
+  ngOnInit(){
+    this.afAuth.currentUser.then(user => {
+      if (user) {
+        this.uid = user.uid;
+        this.loadUserData();
+      }
+    });
   }
 
   Voltarpagina(){
     this.location.back();
   }
 
-  confirmar(salvar: boolean) {
-    
+  loadUserData() {
+    this.firestore.collection('users').doc(this.uid).valueChanges().subscribe(userData => {
+      if (userData) {
+        this.userForm.patchValue(userData);
+      }
+    });
+  }
+
+  async showToast(message: string) {
+    const toast = await this.toastController.create({
+      message,
+      duration: 2000,
+      position: 'top'
+    });
+    toast.present();
+  }
+
+  cancelar() {
+    this.userForm.reset();
+    this.router.navigate(['home']);
+  }
+
+  async confirmar(salvar: boolean) {
     if (salvar) {
-      // Lógica para salvar as alterações
-      console.log('Alterações salvas');
+      try {
+        await this.firestore.collection('users').doc(this.uid).update(this.userForm.value);
+        await this.showToast('Alterações salvas com sucesso!');
+      } catch (error) {
+        await this.showToast('Erro ao salvar alterações!');
+        console.error('Error updating user data:', error);
+      }
+    }
+    
+    else {
+      this.showToast('Alterações descartadas');
+    }
+
+    this.modal.dismiss();
+
+    setTimeout(() => {
+      this.router.navigate(['inicio']);
+    }, 300);
+  }
+
+  async irparaMudarSenha(salvar: boolean){
+    if (salvar) {
+      try {
+        await this.firestore.collection('users').doc(this.uid).update(this.userForm.value);
+        await this.showToast('Alterações salvas com sucesso!');
+      } catch (error) {
+        await this.showToast('Erro ao salvar alterações!');
+        console.error('Error updating user data:', error);
+      }
     } 
     
     else {
-      // Lógica para descartar as alterações
-      console.log('Alterações descartadas');
+      this.userForm.reset();
     }
-    this.modal.dismiss();
+
+    this.senhaModal.dismiss();
 
     setTimeout(() => {
       this.router.navigate(['esqueci-senha']);
     }, 300);
+  }
 
+  async irparaMudarEmail(salvar: boolean){
+    if (salvar) {
+      try {
+        await this.firestore.collection('users').doc(this.uid).update(this.userForm.value);
+        await this.showToast('Alterações salvas com sucesso!');
+      } catch (error) {
+        await this.showToast('Erro ao salvar alterações!');
+        console.error('Error updating user data:', error);
+      }
+    } 
+    
+    else {
+      this.userForm.reset();
+    }
+
+    this.emailModal.dismiss();
+
+    setTimeout(() => {
+      this.router.navigate(['mudar-email']);
+    }, 300);
   }
 
 }

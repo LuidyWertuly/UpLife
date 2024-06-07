@@ -5,9 +5,9 @@ import { ReactiveFormsModule } from '@angular/forms';
 
 import { IonicModule } from '@ionic/angular';
 
-import { EditarContaPageRoutingModule } from './editar-conta-routing.module';
+import { MudarEmailPageRoutingModule } from './mudar-email-routing.module';
 
-import { EditarContaPage } from './editar-conta.page';
+import { MudarEmailPage } from './mudar-email.page';
 
 @NgModule({
   imports: [
@@ -15,8 +15,8 @@ import { EditarContaPage } from './editar-conta.page';
     ReactiveFormsModule,
     FormsModule,
     IonicModule,
-    EditarContaPageRoutingModule
+    MudarEmailPageRoutingModule
   ],
-  declarations: [EditarContaPage]
+  declarations: [MudarEmailPage]
 })
-export class EditarContaPageModule {}
+export class MudarEmailPageModule {}

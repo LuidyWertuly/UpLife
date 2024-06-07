@@ -18,14 +18,14 @@
 
   <ion-grid class="main">
 
-    <form class="formulario">
+    <form [formGroup]="userForm" class="formulario">
 
       <ion-col>
         <ion-title>Nome</ion-title>
       </ion-col>
 
       <ion-col>
-        <ion-input type="text" fill="outline" placeholder="Nome de Usuário"></ion-input>
+        <ion-input formControlName="nome" type="text" fill="outline" placeholder="Nome de Usuário"></ion-input>
       </ion-col>
 
       <ion-col>
@@ -33,7 +33,7 @@
       </ion-col>
 
       <ion-col>
-        <ion-input type="email" fill="outline" placeholder="Seu email"></ion-input>
+        <ion-button id="open-emailModal" expand="full">Mudar o email</ion-button>
       </ion-col>
 
       <ion-col>
@@ -41,7 +41,7 @@
       </ion-col>
 
       <ion-col>
-        <ion-button id="open-modal" expand="full">Mudar a senha</ion-button>
+        <ion-button id="open-senhaModal" expand="full">Mudar a senha</ion-button>
       </ion-col>
 
       <ion-col>
@@ -49,7 +49,7 @@
       </ion-col>
 
       <ion-col>
-        <ion-input type="date" fill="outline"></ion-input>
+        <ion-input formControlName="DTnascimento" type="date" fill="outline"></ion-input>
       </ion-col>
 
       <ion-col>
@@ -58,7 +58,7 @@
 
       <ion-item class="opcoes">
 
-        <ion-radio-group value="sexo">
+        <ion-radio-group formControlName="sexo">
           <ion-radio labelPlacement="end" justify="start" value="masculino">Masculino</ion-radio> <br/>
           <ion-radio labelPlacement="end" justify="start" value="feminino">Feminino</ion-radio> <br/>
         </ion-radio-group>
@@ -70,7 +70,7 @@
       </ion-col>
 
       <ion-col>
-        <ion-input type="number" fill="outline" placeholder="Altura | M"></ion-input>
+        <ion-input formControlName="altura" type="number" fill="outline" placeholder="Altura | M"></ion-input>
       </ion-col>
 
 
@@ -79,7 +79,7 @@
       </ion-col>
 
       <ion-col>
-        <ion-input type="number" fill="outline" placeholder="Peso | Kg"></ion-input>
+        <ion-input formControlName="peso" type="number" fill="outline" placeholder="Peso | Kg"></ion-input>
       </ion-col>
       
       <ion-col>
@@ -88,7 +88,7 @@
 
       <ion-item class="opcoes">
 
-        <ion-radio-group value="atividade">
+        <ion-radio-group formControlName="atividade">
           <ion-radio labelPlacement="end" justify="start" value="sedentario">Sedentário</ion-radio> <br/>
           <ion-radio labelPlacement="end" justify="start" value="moderadamenteAtivo">Moderadamente ativo</ion-radio> <br/>
           <ion-radio labelPlacement="end" justify="start" value="extremamenteAtivo">Extremamente ativo</ion-radio> <br/>
@@ -102,7 +102,7 @@
 
       <ion-item class="opcoes">
 
-        <ion-radio-group value="objetivo">
+        <ion-radio-group formControlName="objetivo">
           <ion-radio labelPlacement="end" justify="start" value="perderPeso">Perder peso</ion-radio> <br/>
           <ion-radio labelPlacement="end" justify="start" value="manterPeso">Manter peso</ion-radio> <br/>
           <ion-radio labelPlacement="end" justify="start" value="ganharPeso">Ganhar peso</ion-radio> <br/>
@@ -111,8 +111,8 @@
       </ion-item>
 
       <ion-col class="botoes">
-        <ion-button type="submit">Salvar</ion-button>
-        <ion-button type="submit">Cancelar</ion-button>
+        <ion-button id="open-modal">Salvar</ion-button>
+        <ion-button (click)="cancelar()">Cancelar</ion-button>
       </ion-col>
 
     </form>
@@ -139,6 +139,58 @@
           <ion-item class="modalButton">
             <ion-button expand="full" (click)="confirmar(true)">Sim</ion-button>
             <ion-button expand="full" (click)="confirmar(false)">Não</ion-button>
+          </ion-item>
+        </ion-list>
+      </ion-content>
+    </ng-template>
+  </ion-modal>
+
+  <ion-modal #senhaModal trigger="open-senhaModal">
+    <ng-template>
+      <ion-content>
+        <ion-toolbar>
+          <ion-title>Confirmação</ion-title>
+          <ion-buttons slot="end">
+            <ion-button (click)="senhaModal.dismiss()">
+              <ion-icon name="close-sharp"></ion-icon>
+            </ion-button>
+          </ion-buttons>
+        </ion-toolbar>
+        <ion-list>
+          <ion-item>
+            <ion-title class="titulo">
+              <p>Deseja salvar suas alterações?</p>
+            </ion-title>
+          </ion-item>
+          <ion-item class="modalButton">
+            <ion-button expand="full" (click)="irparaMudarSenha(true)">Sim</ion-button>
+            <ion-button expand="full" (click)="irparaMudarSenha(false)">Não</ion-button>
+          </ion-item>
+        </ion-list>
+      </ion-content>
+    </ng-template>
+  </ion-modal>
+
+  <ion-modal #emailModal trigger="open-emailModal">
+    <ng-template>
+      <ion-content>
+        <ion-toolbar>
+          <ion-title>Confirmação</ion-title>
+          <ion-buttons slot="end">
+            <ion-button (click)="senhaModal.dismiss()">
+              <ion-icon name="close-sharp"></ion-icon>
+            </ion-button>
+          </ion-buttons>
+        </ion-toolbar>
+        <ion-list>
+          <ion-item>
+            <ion-title class="titulo">
+              <p>Deseja salvar suas alterações?</p>
+            </ion-title>
+          </ion-item>
+          <ion-item class="modalButton">
+            <ion-button expand="full" (click)="irparaMudarEmail(true)">Sim</ion-button>
+            <ion-button expand="full" (click)="irparaMudarEmail(false)">Não</ion-button>
           </ion-item>
         </ion-list>
       </ion-content>

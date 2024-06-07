@@ -48,10 +48,6 @@ const routes: Routes = [
     loadChildren: () => import('./pages/inicial/inicial.module').then( m => m.InicialPageModule)
   },
   {
-    path: 'config-conta',
-    loadChildren: () => import('./pages/config-conta/config-conta.module').then( m => m.ConfigContaPageModule)
-  },
-  {
     path: 'tenis',
     loadChildren: () => import('./pages/tenis/tenis.module').then( m => m.TenisPageModule)
   },
@@ -74,6 +70,10 @@ const routes: Routes = [
   {
     path: 'editar-conta',
     loadChildren: () => import('./pages/editar-conta/editar-conta.module').then( m => m.EditarContaPageModule)
+  },
+  {
+    path: 'mudar-email',
+    loadChildren: () => import('./pages/mudar-email/mudar-email.module').then( m => m.MudarEmailPageModule)
   },
 
 

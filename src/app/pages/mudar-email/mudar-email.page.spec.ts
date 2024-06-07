@@ -1,12 +1,12 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { ConfigContaPage } from './config-conta.page';
+import { MudarEmailPage } from './mudar-email.page';
 
-describe('ConfigContaPage', () => {
-  let component: ConfigContaPage;
-  let fixture: ComponentFixture<ConfigContaPage>;
+describe('MudarEmailPage', () => {
+  let component: MudarEmailPage;
+  let fixture: ComponentFixture<MudarEmailPage>;
 
   beforeEach(() => {
-    fixture = TestBed.createComponent(ConfigContaPage);
+    fixture = TestBed.createComponent(MudarEmailPage);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });
