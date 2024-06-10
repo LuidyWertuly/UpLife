@@ -1,12 +1,6 @@
 <ion-content>
   
-  <ion-grid class="mapa">
-
-    <ion-grid class="meta">
-      <ion-title id="teste">Meta: 10KM</ion-title>
-    </ion-grid>
-
-  </ion-grid>
+  <ion-grid id="map"></ion-grid>
 
   <ion-grid class="botoes">
 
@@ -26,14 +20,6 @@
       <ion-button id="tenis" fill="clear" (click)="IrparaTenis()">
         <ion-icon slot="icon-only" name="footsteps-sharp"></ion-icon>
       </ion-button>
-    </ion-row>
-
-    <ion-row class="medicao">
-      <ion-select placeholder="Marcador" fill="clear" interface="action-sheet">
-        <ion-select-option value="distancia">Distancia</ion-select-option>
-        <ion-select-option value="duracao">Duração</ion-select-option>
-        <ion-select-option value="velocidade">Velocidade</ion-select-option>
-      </ion-select>
     </ion-row>
 
   </ion-grid>

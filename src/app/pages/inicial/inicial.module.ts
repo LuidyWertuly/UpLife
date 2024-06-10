@@ -1,6 +1,7 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
+import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
 
 import { IonicModule } from '@ionic/angular';
 
@@ -15,6 +16,7 @@ import { InicialPage } from './inicial.page';
     IonicModule,
     InicialPageRoutingModule
   ],
-  declarations: [InicialPage]
+  declarations: [InicialPage],
+  providers: [provideHttpClient(withInterceptorsFromDi())]
 })
 export class InicialPageModule {}

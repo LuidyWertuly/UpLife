@@ -10,33 +10,12 @@
     color: transparent;
 }
 
-.mapa{
-    background-image: url("../../../assets/mapaTeste.png");
-    background-repeat: no-repeat;
-    background-size: cover;
-    background-position: center center;
-    min-height: 100%;
-    background-attachment: fixed;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-}
-
-.meta{
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    color: #4782EB;
-    // border: 1px solid red;
-}
-
 .botoes{
     display: flex;
     align-items: center;
     justify-content: center;
     flex-wrap: wrap;
-    // border: 1px solid red;
+    width: 70%;
 }
 
 .config{
@@ -44,7 +23,7 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    // border: 1px solid red;
+    margin: 10px;
 }
 
 .iniciar{
@@ -52,7 +31,7 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    // border: 1px solid red;
+    margin: 10px;
 }
 
 .tenis{
@@ -60,7 +39,7 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    // border: 1px solid red;
+    margin: 10px;
 }
 
 #tenis, #configuracoes{
@@ -77,27 +56,7 @@
     color: black;
 }
 
-.medicao{
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    margin: 0;
-    padding: 0;
+#map {
+    height: 80%;
     width: 100%;
-    // border: 1px solid red;
-}
-
-.medicao ion-select{
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    border-radius: 20px;
-    background-color: white;
-    border: 1px solid #ccc;
-    padding: 0 15px 0 15px;
-    color: black;
-    font-size: 14px;
-    width: auto;
 }
