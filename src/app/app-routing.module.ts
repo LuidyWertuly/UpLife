@@ -52,10 +52,6 @@ const routes: Routes = [
     loadChildren: () => import('./pages/tenis/tenis.module').then( m => m.TenisPageModule)
   },
   {
-    path: 'treinos',
-    loadChildren: () => import('./pages/treinos/treinos.module').then( m => m.TreinosPageModule)
-  },
-  {
     path: 'esqueci-senha',
     loadChildren: () => import('./pages/esqueci-senha/esqueci-senha.module').then( m => m.EsqueciSenhaPageModule)
   },

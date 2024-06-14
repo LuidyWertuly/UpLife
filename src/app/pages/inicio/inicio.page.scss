@@ -14,3 +14,16 @@
 .oculto{
     color: transparent;
 }
+
+.teste{
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+}
+
+.lado{
+    width: 50%;
+    margin-bottom: 10px;
+}

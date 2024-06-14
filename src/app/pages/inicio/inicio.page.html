@@ -18,15 +18,42 @@
 
 <ion-content>
 
-  <ion-card>
+  <ion-card *ngIf="corrida">
     <ion-card-header>
-      <ion-card-title>Passos Diarios</ion-card-title>
-      <ion-card-subtitle>27/05/2024</ion-card-subtitle>
+      <ion-card-title>Última Corrida</ion-card-title>
     </ion-card-header>
-  
-    <ion-card-content>
-      48 Passos
-    </ion-card-content>
+    <ion-accordion-group expand="inset">
+      <ion-accordion>
+        <ion-item slot="header" color="light">
+          <ion-thumbnail slot="start">
+            <img alt="Mapa" [src]="corrida.rota" />
+          </ion-thumbnail>
+          <ion-label>{{ corrida.dia }} - {{ corrida.hora }}</ion-label>
+        </ion-item>
+        <div class="ion-padding" slot="content">
+          <div class="teste">
+            <div class="lado">
+              <ion-title>{{ corrida.distancia }}</ion-title>
+              <ion-title>Quilômetros</ion-title>
+            </div>
+            <div class="lado">
+              <ion-title>{{ corrida.duracao }}</ion-title>
+              <ion-title>Duração</ion-title>
+            </div>
+            <div class="lado">
+              <ion-title>{{ corrida.paceMedio }}</ion-title>
+              <ion-title>Pace médio</ion-title>
+            </div>
+            <div class="lado">
+              <ion-title>{{ corrida.calorias }}</ion-title>
+              <ion-title>Calorias</ion-title>
+            </div>
+          </div>
+        </div>
+      </ion-accordion>
+    </ion-accordion-group>
+    <ion-button fill="clear" (click)="irParaCorrida()">Treinar</ion-button>
+    <ion-button fill="clear" (click)="irParaHistorico()">Histórico</ion-button>
   </ion-card>
 
   <ion-card>
@@ -43,17 +70,4 @@
     <ion-button fill="clear">Historico</ion-button>
   </ion-card>
 
-  <ion-card>
-    <ion-card-header>
-      <ion-card-title>Ultima Corrida</ion-card-title>
-      <ion-card-subtitle>20/05/2024 (7 dias atras)</ion-card-subtitle>
-    </ion-card-header>
-  
-    <ion-card-content>
-      ultimo Historico registrado
-    </ion-card-content>
-  
-    <ion-button fill="clear">Treinar</ion-button>
-    <ion-button fill="clear">Historico</ion-button>
-  </ion-card>
 </ion-content>

@@ -12,8 +12,11 @@ export class InicioPage implements OnInit {
 
   fotoperfil: string = 'https://firebasestorage.googleapis.com/v0/b/uplife-f9bce.appspot.com/o/avatar.jpg?alt=media&token=07e7956f-aed7-4f78-80ff-b41e60e7226a';
 
+  corrida: any = {}
 
-  constructor(private router: Router, private firestore: AngularFirestore, private afAuth: AngularFireAuth) { }
+
+  constructor(private router: Router, private firestore: AngularFirestore, private afAuth: AngularFireAuth){
+  }
 
   ngOnInit() {
 
@@ -21,11 +24,11 @@ export class InicioPage implements OnInit {
       
       if (user) {
         this.firestore.collection('users', ref => ref.where('user_id', '==', user.uid)).get().subscribe(snapshot => {
-          console.log('Autenticado');
+          // console.log('Autenticado');
           if (!snapshot.empty) {
             const doc = snapshot.docs[0];
             const data: any = doc.data();
-            console.log('Documento existe');
+            // console.log('Documento existe');
 
             if (data && data.fotoPerfil) {
               this.fotoperfil = data.fotoPerfil;
@@ -45,6 +48,45 @@ export class InicioPage implements OnInit {
           console.error('Erro ao buscar documento do usuário:', error);
         });
 
+        this.afAuth.authState.subscribe(user => {
+          if (user) {
+            this.firestore.collection('corridas', ref => ref.where('user_id', '==', user.uid).orderBy('data', 'desc').limit(1))
+              .get()
+              .subscribe(snapshot => {
+                // console.log('Autenticado');
+                if (!snapshot.empty) {
+                  const doc = snapshot.docs[0];
+                  const data: any = doc.data();
+                  // console.log('Última corrida encontrada:', data);
+
+                  this.corrida = {
+                    dia: data.data,
+                    hora: data.hora,
+                    distancia: data.distancia,
+                    duracao: data.duracao,
+                    paceMedio: data.ritmoMedio,
+                    calorias: data.calorias,
+                    rota: data.rota
+                  };   
+                } 
+                
+                else {
+                  console.log('Nenhuma corrida encontrada para este usuário.');
+                  this.corrida = null;
+                }
+              }, error => {
+                 console.error('Erro ao buscar última corrida:', error);
+              });
+    
+          } 
+          
+          else {
+            console.log('Usuário não autenticado');
+          }
+        }, error => {
+          console.error('Erro ao verificar estado de autenticação:', error);
+        });
+
       }
       
       else {
@@ -58,6 +100,14 @@ export class InicioPage implements OnInit {
 
   IrparaConfig(){
     this.router.navigate(['configuracoes'])
+  }
+
+  irParaCorrida(){
+    this.router.navigate(['home/tabsCorrida/corrida'])
+  }
+
+  irParaHistorico(){
+    this.router.navigate(['home/tabsCorrida/historico'])
   }
 
 }
