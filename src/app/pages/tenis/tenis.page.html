@@ -17,13 +17,16 @@
         <ion-thumbnail slot="start" class="tenis">
           <img alt="tenis" [src]="teni.foto" />
         </ion-thumbnail>
-        <ion-label>{{teni.nomeTenis}}</ion-label>
+        <ion-label>
+          {{teni.nomeTenis}} 
+          <ion-icon *ngIf="selectedTenisId === teni.tenis_id" name="star-sharp"></ion-icon>
+        </ion-label>
         <ion-note class="distancia">{{teni.distancia}}km - {{teni.meta}}km</ion-note>
       </ion-item>
       <div class="ion-padding" slot="content">
         <ion-button (click)="usar(teni.tenis_id)">Usar</ion-button>
         <ion-button (click)="editar(teni)">Editar</ion-button>
-        <ion-button (click)="excluirTenis(teni.tenis_id)">Excluir</ion-button>
+        <ion-button (click)="confirmar(teni.tenis_id)">Excluir</ion-button>
       </div>
     </ion-accordion>
   </ion-accordion-group>
@@ -32,7 +35,7 @@
     <ion-accordion (click)="usar('null')" value="1" disabled>
       <ion-item slot="header" color="light">
         <ion-thumbnail slot="start" class="tenis"></ion-thumbnail>
-        <ion-label>Nenhum tênis</ion-label>
+        <ion-label>Nenhum tênis <ion-icon *ngIf="selectedTenisId === null" name="star-sharp"></ion-icon></ion-label>
       </ion-item>
     </ion-accordion>
   </ion-accordion-group>
@@ -147,6 +150,26 @@
             </ion-col>
           </form>
         </div>
+      </ion-content>
+    </ng-template>
+  </ion-modal>
+
+  <ion-modal class="confirmarModal" [isOpen]="confirmarModal">
+    <ng-template>
+      <ion-header>
+        <ion-item>
+          <ion-title class="titulo">Deseja excluir?</ion-title>
+        </ion-item>
+      </ion-header>
+      <ion-content>
+        <ion-grid class="confirmarButton">
+          <div class="ladoModal">
+            <ion-button (click)="excluirTenis()">Sim</ion-button>
+          </div>
+          <div class="ladoModal">
+            <ion-button (click)="fecharModal()">Não</ion-button>
+          </div>
+        </ion-grid>
       </ion-content>
     </ng-template>
   </ion-modal>

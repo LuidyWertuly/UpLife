@@ -11,25 +11,24 @@ import { map } from 'rxjs/operators';
   templateUrl: './tenis.page.html',
   styleUrls: ['./tenis.page.scss'],
 })
-
 export class TenisPage implements OnInit {
-
   formModal = false;
   editarModal = false;
+  confirmarModal = false;
+  tenisIdExclusao: string = '';
   tenisForm: FormGroup;
   tenisList: Observable<any[]> | null = null;
   currentTenisId: string | null = null;
+  selectedTenisId: string | null = null;
 
-  constructor(private location: Location, private formBuilder: FormBuilder, private afAuth: AngularFireAuth, private firestore: AngularFirestore){
-
+  constructor(private location: Location, private formBuilder: FormBuilder, private afAuth: AngularFireAuth, private firestore: AngularFirestore) {
     this.tenisForm = this.formBuilder.group({
       nomeTenis: ['', Validators.required],
       meta: ['', Validators.required],
     });
-
   }
 
-  ngOnInit(){
+  ngOnInit() {
     this.afAuth.authState.subscribe(user => {
       if (user) {
         this.tenisList = this.firestore.collection('tenis', ref => ref.where('user_id', '==', user.uid)).snapshotChanges().pipe(
@@ -39,26 +38,38 @@ export class TenisPage implements OnInit {
             return { id, ...data };
           }))
         );
+        this.loadSelectedTenis(user.uid);  // Carregar o tênis selecionado
       }
     });
   }
 
-  adicionarTenis(){
-    this.formModal = true
+  async loadSelectedTenis(userId: string) {
+    const tenisUsadoRef = this.firestore.collection('tenis-usado', ref => ref.where('user_id', '==', userId));
+    try {
+      const snapshot = await tenisUsadoRef.get().toPromise();
+      if (snapshot && !snapshot.empty) {
+        const tenisUsado: any = snapshot.docs[0].data();
+        this.selectedTenisId = tenisUsado.tenis_id;
+      } else {
+        this.selectedTenisId = null;
+      }
+    } catch (error) {
+      console.error("Erro ao carregar o tênis usado:", error);
+    }
+  }
+
+  adicionarTenis() {
+    this.formModal = true;
   }
 
   async salvar() {
     if (this.tenisForm.valid) {
       const { nomeTenis, meta } = this.tenisForm.value;
-
       try {
-
         const user = await this.afAuth.currentUser;
-
         if (user) {
           const userId = user.uid;
           const tenisId = this.firestore.createId();
-
           await this.firestore.collection('tenis').doc(tenisId).set({
             tenis_id: tenisId,
             user_id: userId,
@@ -67,26 +78,20 @@ export class TenisPage implements OnInit {
             nomeTenis: nomeTenis,
             meta: meta
           });
-
           this.formModal = false;
           this.tenisForm.reset();
-        } 
-        
-        else {
+        } else {
           console.error("Usuário não autenticado");
         }
-
       } catch (error) {
         console.error("Erro ao salvar os dados: ", error);
       }
-    } 
-    
-    else {
+    } else {
       this.tenisForm.markAllAsTouched();
     }
   }
 
-  editar(tenis: any){
+  editar(tenis: any) {
     this.currentTenisId = tenis.tenis_id;
     this.tenisForm.setValue({
       nomeTenis: tenis.nomeTenis,
@@ -114,12 +119,18 @@ export class TenisPage implements OnInit {
     }
   }
 
-  async excluirTenis(tenisId: string) {
+  confirmar(tenisId: string) {
+    this.confirmarModal = true;
+    this.tenisIdExclusao = tenisId;
+  }
+
+  async excluirTenis() {
+    this.confirmarModal = false;
     try {
-      await this.firestore.collection('tenis').doc(tenisId).delete();
+      await this.firestore.collection('tenis').doc(this.tenisIdExclusao).delete();
       console.log("Tênis excluído com sucesso!");
     } catch (error) {
-      console.error("Erro ao excluir o tênis: ", error);
+      console.error("Erro ao excluir o tênis:", error);
     }
   }
 
@@ -128,23 +139,23 @@ export class TenisPage implements OnInit {
     if (user) {
       const userId = user.uid;
       const tenisUsadoRef = this.firestore.collection('tenis-usado', ref => ref.where('user_id', '==', userId));
-  
       try {
         const snapshot = await tenisUsadoRef.get().toPromise();
-  
         if (snapshot) {
           if (!snapshot.empty) {
             snapshot.forEach(doc => {
               doc.ref.delete();
             });
           }
-  
           // Adiciona o novo documento com o ID do tênis usado
           if (IDtenis !== 'null') {
             await this.firestore.collection('tenis-usado').add({
               tenis_id: IDtenis,
               user_id: userId,
             });
+            this.selectedTenisId = IDtenis;  // Atualiza o tênis selecionado
+          } else {
+            this.selectedTenisId = null;  // Define como null se "Nenhum tênis" for selecionado
           }
         } else {
           console.error("O snapshot não foi obtido corretamente.");
@@ -156,16 +167,16 @@ export class TenisPage implements OnInit {
       console.error("Usuário não autenticado");
     }
   }
-  
-  fecharModal(){
+
+  fecharModal() {
     this.formModal = false;
     this.editarModal = false;
+    this.confirmarModal = false;
     this.currentTenisId = null;
     this.tenisForm.reset();
   }
 
-  Voltarpagina(){
+  Voltarpagina() {
     this.location.back();
   }
-
 }
