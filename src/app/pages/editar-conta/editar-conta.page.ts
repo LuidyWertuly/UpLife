@@ -93,7 +93,7 @@ export class EditarContaPage implements OnInit {
     this.modal.dismiss();
 
     setTimeout(() => {
-      this.router.navigate(['inicio']);
+      this.router.navigate(['home']);
     }, 300);
   }
 

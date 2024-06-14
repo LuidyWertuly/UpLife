@@ -27,4 +27,33 @@
       </ion-col>
     </form>
   </ion-grid>
+
+  <ion-modal class="confirmarModal" [isOpen]="senhaModal">
+    <ng-template>
+      <ion-header>
+        <ion-item>
+          <ion-title class="titulo">Digite sua senha</ion-title>
+        </ion-item>
+      </ion-header>
+      <ion-content>
+        <ion-grid>
+
+          <ion-col class="titulo">
+            <ion-title>Senha</ion-title>
+          </ion-col>
+
+          <ion-col>
+            <ion-input fill="outline" type="password" [(ngModel)]="password" placeholder="Sua senha"></ion-input>
+          </ion-col>
+
+        </ion-grid>
+
+        <div>
+          <ion-button expand="block" (click)="reauthenticateUser()">Autenticar</ion-button>
+        </div>
+
+      </ion-content>
+    </ng-template>
+  </ion-modal>
+
 </ion-content>

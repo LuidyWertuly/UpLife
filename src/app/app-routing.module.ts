@@ -75,6 +75,10 @@ const routes: Routes = [
     path: 'mudar-email',
     loadChildren: () => import('./pages/mudar-email/mudar-email.module').then( m => m.MudarEmailPageModule)
   },
+  {
+    path: 'confirmar-email',
+    loadChildren: () => import('./pages/confirmar-email/confirmar-email.module').then( m => m.ConfirmarEmailPageModule)
+  },
 
 
 ];
