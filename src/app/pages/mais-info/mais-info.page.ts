@@ -39,7 +39,7 @@ export class MaisInfoPage implements OnInit {
 
       this.http.post('http://localhost:3300/registro2', user)
       .subscribe((response:any) => {
-        console.log(response);
+        // console.log(response);
         
         if (response.isGoogleUser) {
           this.router.navigate(['home']);

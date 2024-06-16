@@ -66,7 +66,7 @@ export class LoginPage implements OnInit {
             const idToken = await user.getIdToken();
             this.http.post('http://localhost:3200/login', { idToken })
               .subscribe(response => {
-                console.log(response);
+                // console.log(response);
                 this.router.navigate(['home']);
               }, error => {
                 console.error(error);

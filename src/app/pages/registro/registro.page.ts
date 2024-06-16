@@ -94,7 +94,7 @@ export class RegistroPage implements OnInit {
 
       this.http.post('http://localhost:3300/registro1', user)
       .subscribe(response => {
-        console.log(response);
+        // console.log(response);
         
         this.router.navigate(['mais-info']);
         
