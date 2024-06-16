@@ -8,7 +8,6 @@ import { AbstractControl } from '@angular/forms';
 interface User {
   email: string;
   nome: string;
-  DTnascimento: string;
   senha: string;
   fotoPerfil: string;
 }
@@ -36,7 +35,6 @@ export class RegistroPage implements OnInit {
     this.userForm = this.formBuilder.group({
       email: ['', [Validators.required, Validators.email]],
       nome: ['', [Validators.required, Validators.minLength(5), nomeValidator]],
-      DTnascimento: ['', Validators.required],
       senha: ['', [Validators.required, Validators.minLength(8)]],
       confirmarSenha: ['', [Validators.required, Validators.minLength(8)]]
     }, { validators: this.verificarSenha });
@@ -45,7 +43,6 @@ export class RegistroPage implements OnInit {
     this.user = {
       email: '',
       nome: '',
-      DTnascimento: '',
       senha: '',
       fotoPerfil: 'https://firebasestorage.googleapis.com/v0/b/uplife-f9bce.appspot.com/o/avatar.jpg?alt=media&token=07e7956f-aed7-4f78-80ff-b41e60e7226a',
     };

@@ -9,13 +9,42 @@ import { Location } from '@angular/common';
 
 export class ConfigCorridaPage implements OnInit {
 
-  constructor(private location: Location) { }
+  placeholderMeta: string = 'Desativado';
+
+  configuracoes: any = {
+    pausaAutomatica: false,
+    contagemRegressiva: 'desativada',
+    tipoVoz: 'desativado',
+    frequenciaAudio: '1km',
+    duracaoComentario: false,
+    distanciaComentario: false,
+    ritmoComentario: false,
+    medidor: 'nenhum',
+    meta: ''
+  };
+
+  constructor(private location: Location) {}
 
   ngOnInit() {
+    this.atualizarPlaceholder();
   }
 
-  Voltarpagina(){
+  Voltarpagina() {
     this.location.back();
+  }
+
+  atualizarPlaceholder() {
+    if (this.configuracoes.medidor === 'nenhum') {
+      this.placeholderMeta = 'Desativado';
+    } 
+    
+    else if (this.configuracoes.medidor === 'distancia') {
+      this.placeholderMeta = 'Distância | KM';
+    } 
+    
+    else if (this.configuracoes.medidor === 'duracao') {
+      this.placeholderMeta = 'Duração | Min';
+    }
   }
 
 }

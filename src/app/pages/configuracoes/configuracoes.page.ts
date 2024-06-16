@@ -120,68 +120,104 @@ export class ConfiguracoesPage implements OnInit {
   }
 
   deletarConta() {
-    this.afAuth.currentUser.then(user => {
-      if (user) {
-        // Obtém os dados do usuário do Firestore
-        this.firestore.collection('users', ref => ref.where('user_id', '==', user.uid)).get().subscribe(snapshot => {
-          if (!snapshot.empty) {
-            const doc = snapshot.docs[0];
-            const data: any = doc.data();
+    this.afAuth.currentUser
+      .then(user => {
+        if (!user) {
+          console.error('Nenhum usuário autenticado.');
+          return;
+        }
   
-            // Verifica se o campo fotoPerfil está presente nos dados do usuário
-            if (data && data.fotoPerfil) {
-              // Exclui a foto de perfil do Firebase Storage
-              this.storage.refFromURL(data.fotoPerfil).delete().toPromise().then(() => {
-                console.log('Foto de perfil excluída com sucesso.');
+        // Obtém os dados do usuário do Firestore para verificar se tem o campo 'google: true'
+        return this.firestore.collection('users', ref => ref.where('user_id', '==', user.uid))
+          .get()
+          .toPromise()
+          .then(snapshot => {
+            if (snapshot && !snapshot.empty) {
+              const doc = snapshot.docs[0];
+              const data: any = doc.data();
   
-                // Exclui conta de autenticação
-                user.delete().then(() => {
-                  console.log('Conta de autenticação excluída com sucesso.');
-                  // Exclui dados do Firestore associados ao usuário
-                  doc.ref.delete().then(() => {
-                    console.log('Dados do Firestore excluídos com sucesso.');
-                    // Redirecionar para a página de login
-                    this.router.navigate(['/inicial']); // Altere para a página de login
-                  }).catch(error => {
-                    console.error('Erro ao excluir dados do Firestore:', error);
-                  });
-                }).catch(error => {
-                  if (error.code === 'auth/requires-recent-login') {
-                    // Redirecionar para a página de login
-                    this.router.navigate(['/login']); // Altere para a página de login
-                  } 
-                  
-                  else {
-                    console.error('Erro ao excluir conta de autenticação:', error);
-                  }
-
-                });
-              }).catch(error => {
-                console.error('Erro ao excluir foto de perfil:', error);
+              // Verifica se o usuário logou com Google
+              let deletePhotoPromise: Promise<void> = Promise.resolve();
+              if (data && data.google) {
+                console.log('Usuário logado com Google. Não será excluída a foto de perfil.');
+              } else {
+                // Exclui a foto de perfil do Firebase Storage, se existir
+                if (user.photoURL) {
+                  deletePhotoPromise = this.storage.refFromURL(user.photoURL)
+                    .delete()
+                    .toPromise()
+                    .then(() => {
+                      console.log('Foto de perfil excluída com sucesso.');
+                    })
+                    .catch(error => {
+                      console.error('Erro ao excluir foto de perfil:', error);
+                      throw error;
+                    });
+                }
+              }
+  
+              // Exclui os dados das coleções adicionais e outros dados do usuário
+              return deletePhotoPromise.then(() => {
+                return Promise.all([
+                  this.deleteCollectionByUserId('tenis', user.uid),
+                  this.deleteCollectionByUserId('tenis-usado', user.uid),
+                  this.deleteCollectionByUserId('corridas', user.uid),
+                  this.deleteCollectionByUserId('users', user.uid) // Exclui dados do usuário do Firestore
+                ])
+              }).then(() => {
+                console.log('Dados das coleções adicionais excluídos com sucesso.');
               });
-            } 
-            
-            else {
-              console.log('Campo fotoPerfil não encontrado nos dados do usuário.');
+            } else {
+              console.log('Documento do usuário não encontrado.');
+              return Promise.resolve();
             }
-
-          } 
-          
-          else {
-            console.log('Documento do usuário não encontrado.');
+          })
+          .then(() => {
+            // Exclui conta de autenticação
+            return user.delete();
+          })
+          .then(() => {
+            console.log('Conta de autenticação excluída com sucesso.');
+  
+            // Redirecionar para a página de login
+            this.router.navigate(['/inicial']); // Altere para a página de login
+          })
+          .catch(error => {
+            if (error.code === 'auth/requires-recent-login') {
+              // Redirecionar para a página de login
+              this.router.navigate(['/login']); // Altere para a página de login
+            } else {
+              console.error('Erro ao excluir conta de autenticação ou dados:', error);
+            }
+          });
+  
+      })
+      .catch(error => {
+        console.error('Erro ao obter o usuário atual:', error);
+      });
+  }
+  
+  // Função auxiliar para excluir documentos de uma coleção com base no user_id
+  private deleteCollectionByUserId(collectionName: string, userId: string): Promise<void> {
+    return new Promise<void>((resolve, reject) => {
+      this.firestore.collection(collectionName, ref => ref.where('user_id', '==', userId))
+        .get()
+        .toPromise()
+        .then(collectionSnapshot => {
+          const deletePromises: Promise<void>[] = [];
+          if (collectionSnapshot && !collectionSnapshot.empty) {
+            collectionSnapshot.forEach(doc => {
+              deletePromises.push(doc.ref.delete());
+            });
           }
-
-        }, error => {
-          console.error('Erro ao buscar documento do usuário:', error);
+          // Resolve a Promise com Promise.all mesmo se não houver documentos para excluir
+          return Promise.all(deletePromises);
+        })
+        .then(() => resolve())
+        .catch(error => {
+          console.error(`Erro ao excluir documentos da coleção ${collectionName}:`, error);
+          reject(error);
         });
-      } 
-      
-      else {
-        console.error('Nenhum usuário autenticado.');
-      }
-      
-    }).catch(error => {
-      console.error('Erro ao obter o usuário atual:', error);
     });
   }
   

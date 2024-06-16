@@ -17,9 +17,12 @@ app.use(express.json());
 
 let tempUser = {};
 let tempUserId = '';
+let tempGoogleUser = {};
+let tempGoogleUserId = '';
 
+// Endpoint para registro convencional
 app.post('/registro1', async (req, res) => {
-  console.log(req.body);
+  console.log('Registro1:', req.body);
 
   let autenticacao = {
     email: req.body.email,
@@ -29,19 +32,15 @@ app.post('/registro1', async (req, res) => {
   tempUser = {
     nome: req.body.nome,
     email: req.body.email,
-    DTnascimento: req.body.DTnascimento,
     fotoPerfil: req.body.fotoPerfil,
   };
 
   try {
-
     // Verificar se o e-mail já está em uso no Firebase Authentication
     let verificarEmail = await admin.auth().getUserByEmail(autenticacao.email);
 
     res.status(400).json({ message: 'Email já está em uso!' });
-
   } catch (error) {
-
     if (error.code === 'auth/user-not-found') {
       // E-mail não encontrado, criar usuário
       try {
@@ -62,26 +61,64 @@ app.post('/registro1', async (req, res) => {
   }
 });
 
+// Endpoint para registro com Google
+app.post('/registroGoogle', async (req, res) => {
+  console.log('RegistroGoogle:', req.body);
 
+  tempGoogleUser = {
+    user_id: req.body.user_id,
+    nome: req.body.nome,
+    email: req.body.email,
+    fotoPerfil: req.body.fotoPerfil,
+    google: 'sim'
+  };
+
+  // Verificar se o usuário já existe no Firestore
+  const userDoc = await db.collection('users').doc(tempGoogleUser.user_id).get();
+
+  if (userDoc.exists) {
+    res.status(200).json({ message: 'Usuário já registrado!' });
+  } else {
+    tempGoogleUserId = tempGoogleUser.user_id;
+    res.status(200).json({ message: 'Dados do primeiro formulário recebidos!' });
+  }
+});
+
+// Endpoint para registro adicional
 app.post('/registro2', async (req, res) => {
-  console.log(req.body);
-  
-  let user = { ...tempUser, ...req.body, user_id: tempUserId };
+  console.log('Registro2:', req.body);
 
-  let salvarDados = db.collection('users').doc(tempUserId).set(user);
-  
-  salvarDados.then(() => {
+  let user;
+  let isGoogleUser = false;
 
+  if (tempUserId) {
+    // Combinar dados temporários de registro convencional e dados adicionais
+    user = { ...tempUser, ...req.body, user_id: tempUserId };
+    // console.log('Usando tempUser:', user);
+
+  } 
+  
+  else if (tempGoogleUserId) {
+    // Combinar dados temporários de registro com Google e dados adicionais
+    user = { ...tempGoogleUser, ...req.body, user_id: tempGoogleUserId };
+    isGoogleUser = true;
+    // console.log('Usando tempGoogleUser:', user);
+  } 
+  
+  else {
+    res.status(400).json({ message: 'Nenhum usuário temporário encontrado!' });
+    return;
+  }
+
+  // Salvar os dados no Firestore
+  try {
+    await db.collection('users').doc(user.user_id).set(user);
     console.log('Dados gravados com sucesso!');
-    res.status(200).json({ message: 'Dados do segundo formulário recebidos!' });
-
-  }).catch((error) => {
-
+    res.status(200).json({ message: 'Dados do segundo formulário recebidos!', isGoogleUser: isGoogleUser });
+  } catch (error) {
     console.error('Erro ao gravar dados:', error);
-    res.status(500).json({ message: 'Erro ao gravar dados!' });
-
-  });
-
+    res.status(500).json({ message: 'Erro ao gravar dados!', error: error.message });
+  }
 });
 
 app.listen(3300, () => console.log('Servidor rodando na porta 3300'));

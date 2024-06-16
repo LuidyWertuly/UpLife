@@ -16,6 +16,7 @@ export class MaisInfoPage implements OnInit {
   constructor(private location: Location, private router: Router, private formBuilder: FormBuilder, private http: HttpClient){
 
     this.userForm = this.formBuilder.group({
+      DTnascimento: ['', Validators.required],
       sexo: ['', Validators.required],
       altura: ['', Validators.required],
       peso: ['', Validators.required],
@@ -37,10 +38,16 @@ export class MaisInfoPage implements OnInit {
       let user = { ...this.userForm.value };
 
       this.http.post('http://localhost:3300/registro2', user)
-      .subscribe(response => {
+      .subscribe((response:any) => {
         console.log(response);
         
-        this.router.navigate(['login']);
+        if (response.isGoogleUser) {
+          this.router.navigate(['home']);
+        } 
+        
+        else {
+          this.router.navigate(['login']);
+        }
         
       }, error => {
         console.error(error);

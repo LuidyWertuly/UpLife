@@ -25,6 +25,18 @@
     <form class="formulario" [formGroup]="userForm" (ngSubmit)="onSubmit()">
 
       <ion-col>
+        <ion-title class="titulo">Data de nascimento</ion-title>
+      </ion-col>
+
+      <ion-col>
+        <ion-input type="date" fill="outline" formControlName="DTnascimento"></ion-input>
+
+        <ion-label *ngIf="userForm.controls['DTnascimento'].invalid && (userForm.controls['DTnascimento'].dirty || userForm.controls['DTnascimento'].touched)">
+          <p class="erro" *ngIf="userForm.controls['DTnascimento'].errors?.['required']">Data de nascimento é obrigatória.</p>
+        </ion-label>
+      </ion-col>
+
+      <ion-col>
         <ion-title class="titulo">Sexo</ion-title>
       </ion-col>
 
