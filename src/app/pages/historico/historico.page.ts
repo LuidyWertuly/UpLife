@@ -74,7 +74,7 @@ export class HistoricoPage implements OnInit {
 
     try {
       await this.firestore.collection('corridas').doc(this.corridaIdExclusao).delete();
-      console.log('Corrida excluída com sucesso!');
+      // console.log('Corrida excluída com sucesso!');
 
       this.corridas = this.corridas.filter(c => c.corrida_id !== this.corridaIdExclusao);
       

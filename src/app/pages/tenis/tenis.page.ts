@@ -128,7 +128,7 @@ export class TenisPage implements OnInit {
     this.confirmarModal = false;
     try {
       await this.firestore.collection('tenis').doc(this.tenisIdExclusao).delete();
-      console.log("Tênis excluído com sucesso!");
+      // console.log("Tênis excluído com sucesso!");
     } catch (error) {
       console.error("Erro ao excluir o tênis:", error);
     }

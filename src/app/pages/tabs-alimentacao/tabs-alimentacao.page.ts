@@ -20,11 +20,11 @@ export class TabsAlimentacaoPage implements OnInit {
       
       if (user) {
         this.firestore.collection('users', ref => ref.where('user_id', '==', user.uid)).get().subscribe(snapshot => {
-          console.log('Autenticado');
+          // console.log('Autenticado');
           if (!snapshot.empty) {
             const doc = snapshot.docs[0];
             const data: any = doc.data();
-            console.log('Documento existe');
+            // console.log('Documento existe');
 
             if (data && data.fotoPerfil) {
               this.fotoperfil = data.fotoPerfil;
