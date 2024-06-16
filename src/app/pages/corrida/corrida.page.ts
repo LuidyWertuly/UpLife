@@ -1,7 +1,6 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { Router } from '@angular/router';
 import * as L from 'leaflet';
-import 'leaflet-image';
 import { AngularFireAuth } from '@angular/fire/compat/auth';
 import { AngularFirestore } from '@angular/fire/compat/firestore';
 import { AngularFireStorage } from '@angular/fire/compat/storage';
@@ -11,7 +10,9 @@ import { AngularFireStorage } from '@angular/fire/compat/storage';
   templateUrl: './corrida.page.html',
   styleUrls: ['./corrida.page.scss'],
 })
+
 export class CorridaPage implements OnInit, OnDestroy {
+  
   map: any;
   userMarker: any;
   watchId: any;
@@ -293,44 +294,37 @@ export class CorridaPage implements OnInit, OnDestroy {
     }
   
     return new Promise<void>((resolve, reject) => {
-      if (typeof (window as any).leafletImage === 'function') {
-        (window as any).leafletImage(this.map, (err: any, canvas: HTMLCanvasElement) => {
-          if (err) {
-            console.error('Erro ao capturar o mapa como imagem:', err);
-            reject(err);
-            return;
-          }
-    
-          canvas.toBlob((blob) => {
-            if (blob) {
-              const filePath = `imagens/${Date.now()}.png`;
-              const fileRef = this.storage.ref(filePath);
-              const uploadTask = fileRef.put(blob);
-    
-              uploadTask.then((snapshot) => {
-                snapshot.ref.getDownloadURL().then((downloadURL) => {
-                  this.rotaImageUrl = downloadURL;
-                  resolve();
-                });
-              }).catch((error) => {
-                console.error('Erro ao enviar a imagem para o Firebase Storage:', error);
-                reject(error);
+      (window as any).leafletImage(this.map, (err: any, canvas: HTMLCanvasElement) => {
+        if (err) {
+          console.error('Erro ao capturar o mapa como imagem:', err);
+          reject(err);
+          return;
+        }
+  
+        canvas.toBlob((blob) => {
+          if (blob) {
+            const filePath = `imagens/${Date.now()}.png`;
+            const fileRef = this.storage.ref(filePath);
+            const uploadTask = fileRef.put(blob);
+  
+            uploadTask.then((snapshot) => {
+              snapshot.ref.getDownloadURL().then((downloadURL) => {
+                this.rotaImageUrl = downloadURL;
+                resolve();
               });
-            } else {
-              console.error('Erro ao criar o Blob da imagem.');
-              reject('Erro ao criar o Blob da imagem.');
-            }
-          }, 'image/png');
-        });
-      } 
-      
-      else {
-        console.error('leafletImage não está disponível.');
-        reject('leafletImage não está disponível.');
-      }
-      
+            }).catch((error) => {
+              console.error('Erro ao enviar a imagem para o Firebase Storage:', error);
+              reject(error);
+            });
+          } else {
+            console.error('Erro ao criar o Blob da imagem.');
+            reject('Erro ao criar o Blob da imagem.');
+          }
+        }, 'image/png');
+      });
     });
   }
+  
 
   IrparaConfigCorrida() {
     this.router.navigate(['/config-corrida']);

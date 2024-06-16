@@ -1,18 +1,82 @@
 <ion-content>
 
-<ion-item>
-  <ion-label>Descrição do Alimento</ion-label>
-  <ion-input [(ngModel)]="descricaoAlimento"></ion-input>
-</ion-item>
+  <ion-item>
+    <ion-label>Descrição do Alimento</ion-label>
+    <ion-input [(ngModel)]="descricaoAlimento"></ion-input>
+  </ion-item>
 
-<ion-button (click)="pesquisarAlimento(descricaoAlimento)">Pesquisar</ion-button>
+  <ion-button (click)="pesquisarAlimento(descricaoAlimento)">Pesquisar</ion-button>
 
-<div *ngIf="alimento">
-  <h2>{{ alimento.description }}</h2>
-  <p>Carboidrato: {{ alimento.carbohydrate_g }}%</p>
-  <p>Energia: {{ alimento.energy_kcal }} kcal</p>
-  <p>Proteína: {{ alimento.protein_g }} g</p>
-  <p>Lipídios: {{ alimento.lipid_g }} g</p>
-</div>
+  <div *ngIf="alimento">
+    <h2>{{ alimento.description }}</h2>
+    <p>Carboidrato: {{ alimento.carbohydrate_g }}%</p>
+    <p>Energia: {{ alimento.energy_kcal }} kcal</p>
+    <p>Proteína: {{ alimento.protein_g }} g</p>
+    <p>Lipídios: {{ alimento.lipid_g }} g</p>
+  </div>
+
+  <!-- Café Da Manhã -->
+  <ion-accordion-group expand="inset">
+    <ion-accordion>
+      <ion-item slot="header" color="light">
+        <ion-thumbnail slot="start">
+          <ion-icon name="cafe" class="cafe"></ion-icon>
+        </ion-thumbnail>
+        <ion-label>Café Da Manhã</ion-label>
+        <ion-icon (click)="abrirAlerta('Café Da Manhã')" name="add" class="green-plus"></ion-icon>
+      </ion-item>
+      <div class="ion-padding" slot="content" id="content-cafe-da-manha">
+        <!-- Conteúdo do acordeão -->
+      </div>
+    </ion-accordion>
+  </ion-accordion-group>
+
+  <!-- Almoço -->
+  <ion-accordion-group expand="inset">
+    <ion-accordion>
+      <ion-item slot="header" color="light">
+        <ion-thumbnail slot="start">
+          <ion-icon name="sunny" class="sunny"></ion-icon>
+        </ion-thumbnail>
+        <ion-label>Almoço</ion-label>
+        <ion-icon (click)="abrirAlerta('Almoço')" name="add" class="green-plus"></ion-icon>
+      </ion-item>
+      <div class="ion-padding" slot="content" id="content-almoco">
+        <!-- Conteúdo do acordeão -->
+      </div>
+    </ion-accordion>
+  </ion-accordion-group>
+
+  <!-- Jantar -->
+  <ion-accordion-group expand="inset">
+    <ion-accordion>
+      <ion-item slot="header" color="light">
+        <ion-thumbnail slot="start">
+          <ion-icon name="moon" class="moon"></ion-icon>
+        </ion-thumbnail>
+        <ion-label>Jantar</ion-label>
+        <ion-icon (click)="abrirAlerta('Jantar')" name="add" class="green-plus"></ion-icon>
+      </ion-item>
+      <div class="ion-padding" slot="content" id="content-jantar">
+        <!-- Conteúdo do acordeão -->
+      </div>
+    </ion-accordion>
+  </ion-accordion-group>
+
+  <!-- Lanches/Outros -->
+  <ion-accordion-group expand="inset">
+    <ion-accordion>
+      <ion-item slot="header" color="light">
+        <ion-thumbnail slot="start">
+          <ion-icon name="nutrition" class="nutrition"></ion-icon>
+        </ion-thumbnail>
+        <ion-label>Lanches/Outros</ion-label>
+        <ion-icon (click)="abrirAlerta('Lanches/Outros')" name="add" class="green-plus"></ion-icon>
+      </ion-item>
+      <div class="ion-padding" slot="content" id="content-lanchesoutros">
+        <!-- Conteúdo do acordeão -->
+      </div>
+    </ion-accordion>
+  </ion-accordion-group>
 
 </ion-content>

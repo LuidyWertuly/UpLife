@@ -28,16 +28,39 @@ export class ConfigCorridaPage implements OnInit {
   constructor(private location: Location, private afAuth: AngularFireAuth, private firestore: AngularFirestore) {}
 
   ngOnInit() {
-    this.atualizarPlaceholder();
+    this.carregarConfiguracoes();
   }
 
   Voltarpagina() {
     this.location.back();
   }
 
+  async carregarConfiguracoes() {
+    const user = await this.afAuth.currentUser;
+    if (user) {
+      const userId = user.uid;
+
+      this.firestore.collection('configuracoesCorrida').doc(userId).valueChanges().subscribe({
+        next: (userData: any) => {
+          if (userData) {
+            // Atualiza this.configuracoes com os dados do Firestore
+            Object.assign(this.configuracoes, userData);
+            this.atualizarPlaceholder();
+          }
+        },
+        error: (error) => {
+          console.error("Erro ao carregar os dados: ", error);
+        }
+      });
+    } else {
+      console.error("Usuário não autenticado");
+    }
+  }
+  
   atualizarPlaceholder() {
     if (this.configuracoes.medidor === 'nenhum') {
       this.placeholderMeta = 'Desativado';
+      this.configuracoes.meta = '';
     } 
     
     else if (this.configuracoes.medidor === 'distancia') {
@@ -56,7 +79,7 @@ export class ConfigCorridaPage implements OnInit {
 
         const userId = user.uid;
 
-        await this.firestore.collection('configuracoes').doc(userId).set({
+        await this.firestore.collection('configuracoesCorrida').doc(userId).set({
           user_id: userId,
           pausaAutomatica: this.configuracoes.pausaAutomatica,
           contagemRegressiva: this.configuracoes.contagemRegressiva,

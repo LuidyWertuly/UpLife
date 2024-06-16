@@ -1,3 +1,4 @@
+<link rel="stylesheet" type="text/css" href="http://fonts.googleapis.com/css?family=Ubuntu:regular,bold&subset=Latin">
 <ion-header>
   <ion-item class="barra-topo">
     
@@ -21,18 +22,45 @@
 </ion-header>
 
 <ion-content>
-  <ion-title>Corpo</ion-title>
-  <ion-card class="cardTituloExercicio" *ngFor="let exercicio of atividade; let i = index">
-    <ion-card-header *ngIf="isTargetDifferent(i)">
-      <ion-card-title *ngIf="isTargetDifferent(i)">{{ exercicio.target }}</ion-card-title>
+  <!-- <ion-card class="cardTituloExercicio" *ngFor="let exercicio of atividade; let i = index">
+    <ion-card-header *ngIf="isTargetDifferent(i)"> -->
+      <!-- <ion-card-title *ngIf="isTargetDifferent(i)">{{ exercicio.target }}</ion-card-title>
       <ion-card-subtitle *ngIf="isTargetDifferent(i)"><p class="tituloExercicio">10 TREINOS DE</p></ion-card-subtitle>
-    </ion-card-header>
+    </ion-card-header> -->
   
     <!-- <ion-card-content *ngIf="isTargetDifferent(i)">
       Here's a small text description for the card content. Nothing more, nothing less. lorem
     </ion-card-content> -->
-  </ion-card>
-  <ion-card class="cardExercicios" *ngFor="let exercicio of atividade; let i = index">
+  <!-- </ion-card> -->
+  
+    <!-- Exibe os grupos de exercícios -->
+    <ng-container *ngFor="let grupo of gruposDeExercicios">
+    <ion-card>
+      <ion-card-header>
+        <ion-card-subtitle><p class="tituloExercicio">{{ grupo.exercicios.length }} TREINOS DE</p></ion-card-subtitle>
+        <ion-card-title class="tituloPanturrilhas">{{ grupo.target | titlecase }}</ion-card-title>
+      </ion-card-header>
+      <ion-card-content>
+        <ion-list>
+          <ion-item *ngFor="let exercicio of grupo.exercicios" (click)="abrirDetalheExercicio(exercicio)">
+            <ion-thumbnail slot="start">
+              <img alt="Exercício {{ exercicio.name }}" class="iconeExercicio" [src]="exercicio.imgUrl" />
+            </ion-thumbnail>
+            <ion-label>{{ exercicio.name }}</ion-label>
+            <ion-icon class="arrow" name="arrow-forward-outline" slot="end"></ion-icon>
+          </ion-item>
+        </ion-list>
+      </ion-card-content>
+    </ion-card>
+  </ng-container>
+  
+
+
+
+
+
+  <!-- aqui em baixo é o card antigo simples -->
+  <!-- <ion-card class="cardExercicios" *ngFor="let exercicio of atividade; let i = index">
     <ion-card-header *ngIf="isTargetDifferent(i)">
       <ion-card-title *ngIf="isTargetDifferent(i)"> </ion-card-title>
       <ion-img
@@ -43,27 +71,53 @@
       <ion-card-subtitle *ngIf="isTargetDifferent(i)">Card Subtitle</ion-card-subtitle>
     </ion-card-header>
   
-    <!-- <ion-card-content>
+    <ion-card-content>
       Here's a small text description for the card content. Nothing more, nothing less.
-    </ion-card-content> -->
-  </ion-card>
-  <ion-list>
-    <ion-item *ngFor="let exercicio of atividade">
-      <ion-label>{{ exercicio.name }}</ion-label>
-      <ion-img [src]="exercicio.gifUrl"></ion-img>
-      <ion-title>Equipamento: {{ exercicio.equipment }}</ion-title>
-      <ion-title>Alvo: {{ exercicio.target }}</ion-title>
-      <ion-title>Sinegistas: {{ exercicio.secondaryMuscles.join(', ') }}</ion-title>
-      <ion-title>Instruções:</ion-title>
-      <ul>
-        <li *ngFor="let instrucao of exercicio.instructions">{{ instrucao }}</li>
-      </ul>
-    </ion-item>
-  </ion-list>
-  <ion-img
+    </ion-card-content>
+  </ion-card> -->
+  <!-- <ion-img
   style="height: 100px;"
     src="../../../assets/atividadesImages/0088.jpeg"
     alt="The Wisconsin State Capitol building in Madison, WI at night"
-  ></ion-img>
-</ion-content>
+  ></ion-img> -->
+
+
+
+  <ion-modal [isOpen]="DetalheExercicio" (ionModalDidDismiss)="fecharModal()">
+    <ng-template>
+      <ion-content class="modal-content">
+        <div class="modal-inner">
+          <ion-img *ngIf="exercicioSelecionado" [src]="exercicioSelecionado.bgUrl" class="background-image"></ion-img>
+          <div class="bloco-preto">
+            <div class="conteudo" *ngIf="exercicioSelecionado">
+              <div class="titulo-e-fechar">
+                <h2>{{ exercicioSelecionado.name }}</h2>
+                <ion-icon name="close-outline" class="botao-fechar" (click)="fecharModal()"></ion-icon>
+              </div>
+              <div class="detalhes">
+                <div class="detalhe">
+                  <p>Alvo</p>
+                  <p>{{ exercicioSelecionado.target }}</p>
+                </div>
+                <div class="detalhe">
+                  <p>Equipamento</p>
+                  <p>{{ exercicioSelecionado.equipment }}</p>
+                </div>
+                <div class="detalhe">
+                  <p>Sinergistas</p>
+                  <p>{{ exercicioSelecionado.secondaryMuscles.join(', ') }}</p>
+                </div>
+              </div>
+              <div class="imagem-exercicio">
+                <img [src]="exercicioSelecionado.imgUrl" alt="Exercício">
+              </div>
+              <div class="instrucoes">
+                <p *ngFor="let instrucao of exercicioSelecionado.instructions">{{ instrucao }}</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </ion-content>
+    </ng-template>
+  </ion-modal>
 
