@@ -1,5 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { Location } from '@angular/common';
+import { AngularFireAuth } from '@angular/fire/compat/auth';
+import { AngularFirestore } from '@angular/fire/compat/firestore';
 
 @Component({
   selector: 'app-config-corrida',
@@ -23,7 +25,7 @@ export class ConfigCorridaPage implements OnInit {
     meta: ''
   };
 
-  constructor(private location: Location) {}
+  constructor(private location: Location, private afAuth: AngularFireAuth, private firestore: AngularFirestore) {}
 
   ngOnInit() {
     this.atualizarPlaceholder();
@@ -44,6 +46,36 @@ export class ConfigCorridaPage implements OnInit {
     
     else if (this.configuracoes.medidor === 'duracao') {
       this.placeholderMeta = 'Duração | Min';
+    }
+  }
+
+ async salvar(){
+    try {
+      const user = await this.afAuth.currentUser;
+      if (user) {
+
+        const userId = user.uid;
+
+        await this.firestore.collection('configuracoes').doc(userId).set({
+          user_id: userId,
+          pausaAutomatica: this.configuracoes.pausaAutomatica,
+          contagemRegressiva: this.configuracoes.contagemRegressiva,
+          tipoVoz: this.configuracoes.tipoVoz,
+          frequenciaAudio: this.configuracoes.frequenciaAudio,
+          duracaoComentario: this.configuracoes.duracaoComentario,
+          distanciaComentario: this.configuracoes.distanciaComentario,
+          ritmoComentario: this.configuracoes.ritmoComentario,
+          medidor: this.configuracoes.medidor,
+          meta: this.configuracoes.meta
+        });
+
+      } 
+      
+      else {
+        console.error("Usuário não autenticado");
+      }
+    } catch (error) {
+      console.error("Erro ao salvar os dados: ", error);
     }
   }
 
