@@ -11,7 +11,6 @@ interface Corrida {
   duracao: string;
   paceMedio: string;
   calorias: number;
-  rota: string | null;
 }
 
 @Component({
@@ -46,7 +45,6 @@ export class HistoricoPage implements OnInit {
                   duracao: data.duracao,
                   paceMedio: data.ritmoMedio,
                   calorias: data.calorias,
-                  rota: data.rota
                 };
                 this.corridas.push(corrida);
               });

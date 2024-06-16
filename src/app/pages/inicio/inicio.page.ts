@@ -66,7 +66,6 @@ export class InicioPage implements OnInit {
                     duracao: data.duracao,
                     paceMedio: data.ritmoMedio,
                     calorias: data.calorias,
-                    rota: data.rota
                   };   
                 } 
                 

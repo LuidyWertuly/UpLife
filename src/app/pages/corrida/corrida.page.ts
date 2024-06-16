@@ -32,7 +32,6 @@ export class CorridaPage implements OnInit, OnDestroy {
   pesoUsuario: number = 0;
   calorias: number = 0;
 
-  rotaImageUrl: string | null = null;
   userId: string | null = null;
 
   constructor(
@@ -219,9 +218,6 @@ export class CorridaPage implements OnInit, OnDestroy {
     this.pausedTime += new Date().getTime() - this.startTime - this.activeTime;
     this.modalTreino = false;
     this.modalPause = true;
-    this.capturarMapaComoImagem().then(() => {
-      // Captura do mapa concluída, se necessário faça algo aqui.
-    });
   }
 
   retomarTreino() {
@@ -239,6 +235,7 @@ export class CorridaPage implements OnInit, OnDestroy {
   pararTreino() {
     this.modalPause = false;
     this.confirmarModal = true;
+
     if (this.intervalId) {
       clearInterval(this.intervalId);
     }
@@ -262,7 +259,6 @@ export class CorridaPage implements OnInit, OnDestroy {
         duracao: this.calcularTempoDecorrido(),
         calorias: this.calorias,
         ritmoMedio: this.calcularRitmoMedio(),
-        rota: this.rotaImageUrl,
         data: dateStr,
         hora: timeStr
       };
@@ -286,45 +282,6 @@ export class CorridaPage implements OnInit, OnDestroy {
       this.router.navigate(['/home/tabsCorrida']);
     }
   }
-
-  capturarMapaComoImagem(): Promise<void> {
-    const mapElement = document.getElementById('map');
-    if (!mapElement) {
-      return Promise.reject('Elemento do mapa não encontrado.');
-    }
-  
-    return new Promise<void>((resolve, reject) => {
-      (window as any).leafletImage(this.map, (err: any, canvas: HTMLCanvasElement) => {
-        if (err) {
-          console.error('Erro ao capturar o mapa como imagem:', err);
-          reject(err);
-          return;
-        }
-  
-        canvas.toBlob((blob) => {
-          if (blob) {
-            const filePath = `imagens/${Date.now()}.png`;
-            const fileRef = this.storage.ref(filePath);
-            const uploadTask = fileRef.put(blob);
-  
-            uploadTask.then((snapshot) => {
-              snapshot.ref.getDownloadURL().then((downloadURL) => {
-                this.rotaImageUrl = downloadURL;
-                resolve();
-              });
-            }).catch((error) => {
-              console.error('Erro ao enviar a imagem para o Firebase Storage:', error);
-              reject(error);
-            });
-          } else {
-            console.error('Erro ao criar o Blob da imagem.');
-            reject('Erro ao criar o Blob da imagem.');
-          }
-        }, 'image/png');
-      });
-    });
-  }
-  
 
   IrparaConfigCorrida() {
     this.router.navigate(['/config-corrida']);

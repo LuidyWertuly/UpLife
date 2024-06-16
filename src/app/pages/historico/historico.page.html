@@ -12,9 +12,6 @@
 
         <ion-accordion *ngFor="let corrida of corridas" [value]="corrida.corrida_id">
           <ion-item slot="header" color="light">
-            <ion-thumbnail slot="start">
-              <img alt="Mapa" [src]="corrida.rota || 'assets/imgs/default-map.png'" />
-            </ion-thumbnail>
             <ion-label>{{ corrida.dia }} - {{ corrida.hora }}</ion-label>
           </ion-item>
 
@@ -38,10 +35,6 @@
               <div class="lado">
                 <ion-title>{{ corrida.calorias }}</ion-title>
                 <ion-title>Calorias</ion-title>
-              </div>
-      
-              <div class="img">
-                <ion-img [src]="corrida.rota" alt="Mapa"></ion-img>
               </div>
 
               <ion-button (click)="confirmarExclusao(corrida.corrida_id)">Excluir</ion-button>
