@@ -10,6 +10,7 @@ export class HistoricoAlimentacaoPage implements OnInit {
   constructor() { }
 
   ngOnInit() {
+    
   }
 
 }

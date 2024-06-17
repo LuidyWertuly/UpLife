@@ -1,6 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { HttpClient } from '@angular/common/http';
+import { AngularFireAuth } from '@angular/fire/compat/auth';
+import { AngularFirestore } from '@angular/fire/compat/firestore';
 import { AlertController } from '@ionic/angular';
 import { TextFieldTypes } from '@ionic/core';
 
@@ -31,6 +33,8 @@ export class AlimentacaoPage implements OnInit {
   constructor(
     private router: Router,
     private http: HttpClient,
+    private firestore: AngularFirestore,
+    private afAuth: AngularFireAuth,
     public alertController: AlertController
   ) {
     this.descricaoAlimento = '';
@@ -78,7 +82,8 @@ export class AlimentacaoPage implements OnInit {
                 energy_kcal: calorias,
                 protein_g: proteina,
                 lipid_g: gordura,
-                carbohydrate_g: carboidratos
+                carbohydrate_g: carboidratos,
+                gramas: data.gramas
               }, mealType);
             } else {
               console.warn('Alimento não encontrado ou quantidade em gramas não informada!');
@@ -121,7 +126,7 @@ export class AlimentacaoPage implements OnInit {
     }
   }
 
-  adicionarAlimentoAcordeao(alimento: any, mealType: string) {
+  async adicionarAlimentoAcordeao(alimento: any, mealType: string) {
     // Constrói o ID do acordeão com base no tipo da refeição
     const acordeaoId = `content-${mealType.toLowerCase()
       .normalize("NFD").replace(/[\u0300-\u036f]/g, "") // Remove acentos
@@ -145,14 +150,43 @@ export class AlimentacaoPage implements OnInit {
         Calorias: ${alimento.energy_kcal} kcal<br>
         Proteína: ${alimento.protein_g} g<br>
         Gordura: ${alimento.lipid_g} g<br>
-        Carboidratos: ${alimento.carbohydrate_g} g
+        Carboidratos: ${alimento.carbohydrate_g} g<br>
+        Quantidade: ${alimento.gramas} g
       `;
       // Adiciona o novo elemento ao conteúdo do acordeão
       acordeaoContent.appendChild(pElement);
+
+      // Salva no Firebase
+      try {
+        const user = await this.afAuth.currentUser;
+        if (user) {
+          const userId = user.uid;
+
+          // Cria um novo documento no Firestore
+          await this.firestore.collection('alimentacao').add({
+            user_id: userId,
+            tipoRefeicao: mealType,
+            alimento: {
+              description: alimento.description,
+              energy_kcal: alimento.energy_kcal,
+              protein_g: alimento.protein_g,
+              lipid_g: alimento.lipid_g,
+              carbohydrate_g: alimento.carbohydrate_g,
+              gramas: alimento.gramas
+            },
+            dataHora: new Date()
+          });
+
+          console.log('Alimento salvo no Firebase!');
+        } else {
+          console.error("Usuário não autenticado");
+        }
+      } catch (error) {
+        console.error("Erro ao salvar os dados: ", error);
+      }
+
     } else {
       console.warn(`Elemento de acordeão não encontrado para ${mealType}`);
     }
   }
-  
-  
 }

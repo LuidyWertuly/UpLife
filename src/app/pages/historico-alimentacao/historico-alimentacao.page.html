@@ -1,8 +1,72 @@
 <ion-content>
  
-  <ion-grid class="mensagem">
-    <ion-title>Nada por enquanto</ion-title>
-    <ion-title>Experimente comer!</ion-title>
-  </ion-grid>
+  <!-- Café Da Manhã -->
+  <ion-accordion-group expand="inset">
+    <ion-accordion>
+      <ion-item slot="header" color="light">
+        <ion-thumbnail slot="start">
+          <ion-icon name="cafe" class="cafe"></ion-icon>
+        </ion-thumbnail>
+        <ion-label>16 de junho de 2024 às 22:12:30 UTC-3</ion-label>
+      </ion-item>
+      <div class="ion-padding" slot="content" id="content-cafe-da-manha">
+        <!-- Conteúdo do acordeão -->
+        <ion-accordion-group expand="inset">
+          <ion-accordion>
+            <ion-item slot="header" color="light">
+              <ion-thumbnail slot="start">
+                <ion-icon name="cafe" class="cafe"></ion-icon>
+              </ion-thumbnail>
+              <ion-label>Café Da Manhã</ion-label>
+            </ion-item>
+            
+            <div class="ion-padding" slot="content" id="content-cafe-da-manha">
+              <!-- Conteúdo do acordeão -->
+            </div>
+          </ion-accordion>
+        </ion-accordion-group>
+        <ion-accordion-group expand="inset">
+          <ion-accordion>
+            <ion-item slot="header" color="light">
+              <ion-thumbnail slot="start">
+                <ion-icon name="sunny" class="sunny"></ion-icon>
+              </ion-thumbnail>
+              <ion-label>Almoço</ion-label>
+            </ion-item>
+            <div class="ion-padding" slot="content" id="content-almoco">
+              <!-- Conteúdo do acordeão -->
+            </div>
+          </ion-accordion>
+          <ion-accordion-group expand="inset">
+            <ion-accordion>
+              <ion-item slot="header" color="light">
+                <ion-thumbnail slot="start">
+                  <ion-icon name="moon" class="moon"></ion-icon>
+                </ion-thumbnail>
+                <ion-label>Jantar</ion-label>
+              </ion-item>
+              <div class="ion-padding" slot="content" id="content-jantar">
+                <!-- Conteúdo do acordeão -->
+              </div>
+            </ion-accordion>
+          </ion-accordion-group>
+          <ion-accordion-group expand="inset">
+            <ion-accordion>
+              <ion-item slot="header" color="light">
+                <ion-thumbnail slot="start">
+                  <ion-icon name="nutrition" class="nutrition"></ion-icon>
+                </ion-thumbnail>
+                <ion-label>Lanches/Outros</ion-label>
+              </ion-item>
+              <div class="ion-padding" slot="content" id="content-lanchesoutros">
+                <!-- Conteúdo do acordeão -->
+              </div>
+            </ion-accordion>
+          </ion-accordion-group>
+        </ion-accordion-group>
+      </div>
+    </ion-accordion>
+  </ion-accordion-group>
+
   
 </ion-content>
