@@ -2,8 +2,8 @@ import { Component, OnInit } from '@angular/core';
 import { Location } from '@angular/common';
 import { Router } from '@angular/router';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { HttpClient } from '@angular/common/http';
 import { AbstractControl } from '@angular/forms';
+import { RegistroService } from 'src/app/sevices/registro.service';
 
 interface User {
   email: string;
@@ -26,11 +26,12 @@ function nomeValidator(control: AbstractControl) {
   templateUrl: './registro.page.html',
   styleUrls: ['./registro.page.scss'],
 })
+
 export class RegistroPage implements OnInit {
 
   userForm: FormGroup;
 
-  constructor(private location: Location, private router: Router, private formBuilder: FormBuilder, private http: HttpClient){
+  constructor(private location: Location, private router: Router, private formBuilder: FormBuilder, private registroService: RegistroService){
 
     this.userForm = this.formBuilder.group({
       email: ['', [Validators.required, Validators.email]],
@@ -86,22 +87,23 @@ export class RegistroPage implements OnInit {
   user: User;
   emailErro: string;
 
-  onSubmit(){
+  async onSubmit(){
     if (this.userForm.valid){
       let user = { ...this.userForm.value };
       user.fotoPerfil = this.user.fotoPerfil;
       delete user.confirmarSenha;
 
-      this.http.post('http://localhost:3300/registro1', user)
-      .subscribe(response => {
-        // console.log(response);
-        
+      try {
+        const response = await this.registroService.dadosUsuario(user);
+        // Sucesso no registro, navegue para a próxima página
         this.router.navigate(['mais-info']);
-        
-      }, error => {
+      } 
+      
+      catch (error: any) {
         console.error(error);
-        this.emailErro = error.error.message;
-      });
+        this.emailErro = error.message;
+      }
+
     }
 
     else {

@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { Location } from '@angular/common';
 import { Router } from '@angular/router';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { HttpClient } from '@angular/common/http';
+import { RegistroService } from 'src/app/sevices/registro.service';
 
 @Component({
   selector: 'app-mais-info',
@@ -13,7 +13,7 @@ export class MaisInfoPage implements OnInit {
 
   userForm: FormGroup;
 
-  constructor(private location: Location, private router: Router, private formBuilder: FormBuilder, private http: HttpClient){
+  constructor(private location: Location, private router: Router, private formBuilder: FormBuilder, private registroService: RegistroService){
 
     this.userForm = this.formBuilder.group({
       DTnascimento: ['', Validators.required],
@@ -33,25 +33,27 @@ export class MaisInfoPage implements OnInit {
     this.location.back();
   }
 
-  onSubmit(){
+  async onSubmit(){
     if (this.userForm.valid) {
       let user = { ...this.userForm.value };
 
-      this.http.post('http://localhost:3300/registro2', user)
-      .subscribe((response:any) => {
-        // console.log(response);
+      try {
+        const response = await this.registroService.registrarUsuario(user);
         
-        if (response.isGoogleUser) {
+        if (response.GoogleUser) {
           this.router.navigate(['home']);
         } 
         
         else {
           this.router.navigate(['login']);
         }
-        
-      }, error => {
+
+      } 
+      
+      catch (error: any) {
         console.error(error);
-      });
+      }
+      
     }
 
     else {

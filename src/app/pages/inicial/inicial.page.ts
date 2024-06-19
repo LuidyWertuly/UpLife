@@ -1,8 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
-import { HttpClient } from '@angular/common/http';
 import { AngularFireAuth } from '@angular/fire/compat/auth';
 import { AngularFirestore } from '@angular/fire/compat/firestore';
+import { RegistroService } from 'src/app/sevices/registro.service';
 import firebase from 'firebase/compat/app';
 import 'firebase/compat/auth';
 
@@ -13,7 +13,7 @@ import 'firebase/compat/auth';
 })
 export class InicialPage implements OnInit {
 
-  constructor(private router: Router, private afAuth: AngularFireAuth, private firestore: AngularFirestore, private http: HttpClient){}
+  constructor(private router: Router, private afAuth: AngularFireAuth, private firestore: AngularFirestore, private registroService: RegistroService){}
 
   ngOnInit() {}
 
@@ -32,12 +32,13 @@ export class InicialPage implements OnInit {
       if (result.user) {
         const userGoogleData = result.user;
         const userDoc = await this.firestore.collection('users').doc(userGoogleData.uid).get().toPromise();
-
-        if (userDoc && userDoc.exists) {
-          // Dados do usuário já existem no Firestore
+        
+        if(userDoc && userDoc.exists){
           this.router.navigate(['home']);
-        } else {
-          // Dados do usuário não existem no Firestore, salvar temporariamente no backend
+        }
+
+        else{
+
           const userData = {
             user_id: userGoogleData.uid,
             nome: userGoogleData.displayName,
@@ -45,24 +46,28 @@ export class InicialPage implements OnInit {
             fotoPerfil: userGoogleData.photoURL,
           };
 
-          // Enviando os dados para o backend
-          this.enviarDadosUsuario(userData);
+          const response = await this.registroService.dadosGoogle(userData);
+
+          if (response.message === 'Usuário já registrado!') {
+            this.router.navigate(['home']);
+          } 
+          
+          else {
+            this.router.navigate(['mais-info']);
+          }
         }
-      } else {
+      } 
+      
+      else {
         console.error('Nenhum usuário retornado do Google login');
       }
-    } catch (error) {
+
+    } 
+    
+    catch (error) {
       console.error('Erro ao fazer login com o Google:', error);
     }
+
   }
 
-  enviarDadosUsuario(userData: any) {
-    this.http.post('http://localhost:3300/registroGoogle', userData)
-      .subscribe(response => {
-        console.log(response);
-        this.router.navigate(['mais-info']);
-      }, error => {
-        console.error(error);
-      });
-  }
 }

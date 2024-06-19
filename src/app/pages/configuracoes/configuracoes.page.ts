@@ -139,7 +139,7 @@ export class ConfiguracoesPage implements OnInit {
               // Verifica se o usuário logou com Google
               let deletePhotoPromise: Promise<void> = Promise.resolve();
               if (data && data.google) {
-                console.log('Usuário logado com Google. Não será excluída a foto de perfil.');
+                // console.log('Usuário logado com Google. Não será excluída a foto de perfil.');
               } else {
                 // Exclui a foto de perfil do Firebase Storage, se existir
                 if (user.photoURL) {
@@ -147,7 +147,7 @@ export class ConfiguracoesPage implements OnInit {
                     .delete()
                     .toPromise()
                     .then(() => {
-                      console.log('Foto de perfil excluída com sucesso.');
+                      // console.log('Foto de perfil excluída com sucesso.');
                     })
                     .catch(error => {
                       console.error('Erro ao excluir foto de perfil:', error);
@@ -162,10 +162,12 @@ export class ConfiguracoesPage implements OnInit {
                   this.deleteCollectionByUserId('tenis', user.uid),
                   this.deleteCollectionByUserId('tenis-usado', user.uid),
                   this.deleteCollectionByUserId('corridas', user.uid),
-                  this.deleteCollectionByUserId('users', user.uid) // Exclui dados do usuário do Firestore
+                  this.deleteCollectionByUserId('users', user.uid),
+                  this.deleteCollectionByUserId('configuracoesCorrida', user.uid),
+                  this.deleteCollectionByUserId('alimentacao', user.uid)
                 ])
               }).then(() => {
-                console.log('Dados das coleções adicionais excluídos com sucesso.');
+                // console.log('Dados das coleções adicionais excluídos com sucesso.');
               });
             } else {
               console.log('Documento do usuário não encontrado.');
@@ -177,7 +179,7 @@ export class ConfiguracoesPage implements OnInit {
             return user.delete();
           })
           .then(() => {
-            console.log('Conta de autenticação excluída com sucesso.');
+            // console.log('Conta de autenticação excluída com sucesso.');
   
             // Redirecionar para a página de login
             this.router.navigate(['/inicial']); // Altere para a página de login
@@ -223,7 +225,7 @@ export class ConfiguracoesPage implements OnInit {
   
   sairConta(){
     this.afAuth.signOut().then(() => {
-      console.log('Usuário desconectado com sucesso.');
+      // console.log('Usuário desconectado com sucesso.');
       // Redirecionar para a página de login ou página inicial
       this.router.navigate(['/inicial']); // Altere para a página desejada
     }).catch(error => {
