@@ -28,19 +28,19 @@
         <ion-input formControlName="nome" type="text" fill="outline" placeholder="Nome de Usuário"></ion-input>
       </ion-col>
 
-      <ion-col>
+      <ion-col *ngIf="!userGoogle">
         <ion-title>Email</ion-title>
       </ion-col>
 
-      <ion-col>
+      <ion-col *ngIf="!userGoogle">
         <ion-button id="open-emailModal" expand="full">Mudar o email</ion-button>
       </ion-col>
 
-      <ion-col>
+      <ion-col *ngIf="!userGoogle">
         <ion-title>Senha</ion-title>
       </ion-col>
 
-      <ion-col>
+      <ion-col  *ngIf="!userGoogle">
         <ion-button id="open-senhaModal" expand="full">Mudar a senha</ion-button>
       </ion-col>
 

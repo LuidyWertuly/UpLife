@@ -36,25 +36,29 @@ export class ConfigCorridaPage implements OnInit {
   }
 
   async carregarConfiguracoes() {
-    const user = await this.afAuth.currentUser;
-    if (user) {
-      const userId = user.uid;
+    
+    this.afAuth.onAuthStateChanged(user => {
+      if (user) {
+        const userId = user.uid;
 
-      this.firestore.collection('configuracoesCorrida').doc(userId).valueChanges().subscribe({
-        next: (userData: any) => {
-          if (userData) {
-            // Atualiza this.configuracoes com os dados do Firestore
-            Object.assign(this.configuracoes, userData);
-            this.atualizarPlaceholder();
+        this.firestore.collection('configuracoesCorrida').doc(userId).valueChanges().subscribe({
+          next: (userData: any) => {
+            if (userData) {
+              Object.assign(this.configuracoes, userData);
+              this.atualizarPlaceholder();
+            }
+          },
+          error: (error) => {
+            console.error("Erro ao carregar os dados: ", error);
           }
-        },
-        error: (error) => {
-          console.error("Erro ao carregar os dados: ", error);
-        }
-      });
-    } else {
-      console.error("Usuário não autenticado");
-    }
+        });
+      }
+
+      else{
+        console.log('sem usuario')
+      }
+    });
+
   }
   
   atualizarPlaceholder() {

@@ -22,6 +22,9 @@ export class EditarContaPage implements OnInit {
   userForm: FormGroup;
 
   uid: string;
+  originalUserData: any = {};
+
+  userGoogle: boolean = false;
 
   constructor(private location: Location, private router: Router, private afAuth: AngularFireAuth, private firestore: AngularFirestore, private fb: FormBuilder, private toastController: ToastController){
     
@@ -41,10 +44,26 @@ export class EditarContaPage implements OnInit {
   }
 
   ngOnInit(){
-    this.afAuth.currentUser.then(user => {
+    this.afAuth.onAuthStateChanged(user => {
       if (user) {
+
         this.uid = user.uid;
         this.loadUserData();
+
+        this.firestore.collection('users').doc(this.uid).valueChanges().subscribe(userData => {
+
+          let usuario: any =  userData
+
+          if (usuario && usuario.google === 'sim') {
+            this.userGoogle = true;
+          }
+          
+        });
+
+      }
+
+      else{
+        console.log('sem usuario')
       }
     });
   }
@@ -56,6 +75,7 @@ export class EditarContaPage implements OnInit {
   loadUserData() {
     this.firestore.collection('users').doc(this.uid).valueChanges().subscribe(userData => {
       if (userData) {
+        this.originalUserData = userData;
         this.userForm.patchValue(userData);
       }
     });
@@ -71,7 +91,7 @@ export class EditarContaPage implements OnInit {
   }
 
   cancelar() {
-    this.userForm.reset();
+    this.userForm.patchValue(this.originalUserData);
     this.router.navigate(['home']);
   }
 
@@ -109,7 +129,7 @@ export class EditarContaPage implements OnInit {
     } 
     
     else {
-      this.userForm.reset();
+      this.userForm.patchValue(this.originalUserData);
     }
 
     this.senhaModal.dismiss();
@@ -131,7 +151,7 @@ export class EditarContaPage implements OnInit {
     } 
     
     else {
-      this.userForm.reset();
+      this.userForm.patchValue(this.originalUserData);
     }
 
     this.emailModal.dismiss();
