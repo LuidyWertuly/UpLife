@@ -12,6 +12,8 @@ import { TextFieldTypes } from '@ionic/core';
   styleUrls: ['./alimentacao.page.scss'],
 })
 export class AlimentacaoPage implements OnInit {
+  quantidadeAguaRecomendada: number = 0;
+  quantidadeAguaConsumida: number = 0;
   DetalheAlimento = false;
   alimento: any;
   descricaoAlimento: string;
@@ -39,9 +41,44 @@ export class AlimentacaoPage implements OnInit {
   ) {
     this.descricaoAlimento = '';
     this.carregarAlimentos();
+    this.carregarQuantidadeAguaRecomendada();
   }
 
-  ngOnInit() {}
+  async ngOnInit() {
+    // Verificar se os dados devem ser limpos no início do dia
+    this.verificarFimDoDia();
+
+    // Carregar alimentos do Local Storage ao iniciar a página
+    this.carregarAlimentosDoLocalStorage();
+  }
+
+  async carregarQuantidadeAguaRecomendada() {
+    try {
+      const user = await this.afAuth.currentUser;
+      if (user) {
+        const userId = user.uid;
+  
+        // Busca o documento do usuário no Firestore
+        const userDoc = await this.firestore.collection('users').doc(userId).get().toPromise();
+  
+        // Verifica se o documento existe antes de acessar seus dados
+        if (userDoc && userDoc.exists) {
+          const userData = userDoc.data() as any; // Define o tipo de userData como any
+          const pesoUsuario = userData.peso || 0; // Acessa o campo peso
+  
+          // Calcula a quantidade recomendada de água (35 ml por kg de peso)
+          this.quantidadeAguaRecomendada = pesoUsuario * 35;
+        } else {
+          console.error('Documento do usuário não encontrado ou não existe no Firestore.');
+        }
+      } else {
+        console.error('Usuário não autenticado.');
+      }
+    } catch (error) {
+      console.error('Erro ao buscar dados do usuário:', error);
+    }
+  }
+  
 
   carregarAlimentos() {
     this.http.get('assets/json/TACO.json').subscribe((data: any) => {
@@ -164,17 +201,15 @@ export class AlimentacaoPage implements OnInit {
 
           // Cria um novo documento no Firestore
           await this.firestore.collection('alimentacao').add({
-            user_id: userId,
-            tipoRefeicao: mealType,
-            alimento: {
+              user_id: userId,
+              tipoRefeicao: mealType,
               description: alimento.description,
               energy_kcal: alimento.energy_kcal,
               protein_g: alimento.protein_g,
               lipid_g: alimento.lipid_g,
               carbohydrate_g: alimento.carbohydrate_g,
-              gramas: alimento.gramas
-            },
-            dataHora: new Date()
+              gramas: alimento.gramas,
+              dataHora: new Date()
           });
 
           console.log('Alimento salvo no Firebase!');
@@ -185,8 +220,177 @@ export class AlimentacaoPage implements OnInit {
         console.error("Erro ao salvar os dados: ", error);
       }
 
+      // Salva no Local Storage
+      this.salvarNoLocalStorage(alimento, mealType);
     } else {
       console.warn(`Elemento de acordeão não encontrado para ${mealType}`);
+    }
+  }
+
+  salvarNoLocalStorage(alimento: any, mealType: string) {
+    const currentDay = new Date().toISOString().split('T')[0];
+    const key = `alimentacao_${currentDay}`;
+
+    let storedData = localStorage.getItem(key);
+    let data = storedData ? JSON.parse(storedData) : {};
+
+    if (!data[mealType]) {
+      data[mealType] = [];
+    }
+    
+    data[mealType].push(alimento);
+    localStorage.setItem(key, JSON.stringify(data));
+  }
+
+  // Método carregarAlimentosDoLocalStorage atualizado
+carregarAlimentosDoLocalStorage() {
+  const currentDay = new Date().toISOString().split('T')[0];
+  const keyAlimentacao = `alimentacao_${currentDay}`;
+  const keyAgua = `agua_${currentDay}`;
+
+  const storedDataAlimentacao = localStorage.getItem(keyAlimentacao);
+  const storedDataAgua = localStorage.getItem(keyAgua);
+
+  if (storedDataAlimentacao) {
+    const dataAlimentacao = JSON.parse(storedDataAlimentacao);
+    for (let mealType in dataAlimentacao) {
+      if (dataAlimentacao.hasOwnProperty(mealType)) {
+        dataAlimentacao[mealType].forEach((alimento: any) => {
+          this.adicionarAlimentoLocalmente(alimento, mealType);
+        });
+      }
+    }
+  }
+
+  if (storedDataAgua) {
+    const dataAgua = JSON.parse(storedDataAgua);
+    let quantidadeTotalAgua = 0;
+    if (dataAgua['consumo_agua']) {
+      dataAgua['consumo_agua'].forEach((item: any) => {
+        quantidadeTotalAgua += item.quantidade_ml;
+      });
+    }
+    this.quantidadeAguaConsumida = quantidadeTotalAgua;
+
+    // Atualiza a interface com a quantidade de água consumida
+    const quantidadeAguaElement = document.getElementById('quantidadeAgua');
+    if (quantidadeAguaElement) {
+      quantidadeAguaElement.innerHTML = `${this.quantidadeAguaConsumida} ml de 2500 ml`;
+    }
+  }
+}
+
+
+  adicionarAlimentoLocalmente(alimento: any, mealType: string) {
+    const acordeaoId = `content-${mealType.toLowerCase()
+      .normalize("NFD").replace(/[\u0300-\u036f]/g, "")
+      .replace(/[^a-z0-9\s]/g, '')
+      .replace(/\s+/g, '-')
+      .replace(/-+/g, '-')
+      .trim()}`;
+    
+    const acordeaoContent = document.getElementById(acordeaoId);
+
+    if (acordeaoContent) {
+      const pElement = document.createElement('p');
+      pElement.innerHTML = `
+        <strong>${alimento.description}</strong><br>
+        Calorias: ${alimento.energy_kcal} kcal<br>
+        Proteína: ${alimento.protein_g} g<br>
+        Gordura: ${alimento.lipid_g} g<br>
+        Carboidratos: ${alimento.carbohydrate_g} g<br>
+        Quantidade: ${alimento.gramas} g
+      `;
+      acordeaoContent.appendChild(pElement);
+    } else {
+      console.warn(`Elemento de acordeão não encontrado para ${mealType}`);
+    }
+  }
+
+  async adicionarAgua(ml: number) {
+    try {
+      // Atualiza a quantidade consumida de água
+      this.quantidadeAguaConsumida += ml;
+
+      // Salva no localStorage
+      const currentDay = new Date().toISOString().split('T')[0];
+      const key = `agua_${currentDay}`;
+
+      let storedData = localStorage.getItem(key);
+      let data = storedData ? JSON.parse(storedData) : {};
+
+      if (!data['consumo_agua']) {
+        data['consumo_agua'] = [];
+      }
+
+      data['consumo_agua'].push({
+        quantidade_ml: ml,
+        dataHora: new Date()
+      });
+
+      localStorage.setItem(key, JSON.stringify(data));
+
+      console.log('Quantidade de água consumida salva no localStorage!');
+
+      // Salva no Firebase
+      await this.salvarNoFirebase(ml);
+
+    } catch (error) {
+      console.error("Erro ao salvar os dados de água: ", error);
+    }
+  }
+
+  async salvarNoFirebase(ml: number) {
+    try {
+      const user = await this.afAuth.currentUser;
+      if (user) {
+        const userId = user.uid;
+
+        // Salva no Firestore
+        await this.firestore.collection('agua').add({
+          user_id: userId,
+          quantidade_ml: ml,
+          dataHora: new Date()
+        });
+
+        console.log('Água consumida salva no Firebase!');
+      } else {
+        console.error("Usuário não autenticado");
+      }
+    } catch (error) {
+      console.error("Erro ao salvar os dados de água no Firebase: ", error);
+    }
+  }
+
+  limparDadosDoLocalStorage() {
+    const currentDay = new Date().toISOString().split('T')[0];
+    const key = `alimentacao_${currentDay}`;
+
+    localStorage.removeItem(key);
+  }
+
+  verificarFimDoDia() {
+    // Recupera a data atual
+    const currentDay = new Date().toISOString().split('T')[0];
+
+    // Verifica todas as chaves do Local Storage
+    for (let i = 0; i < localStorage.length; i++) {
+      const key = localStorage.key(i);
+
+      // Se a chave contém "alimentacao_" e não é do dia atual, remove-a
+      if (key && key.startsWith('alimentacao_') && key !== `alimentacao_${currentDay}`) {
+        localStorage.removeItem(key);
+      }
+    }
+
+    // Verifica todas as chaves do Local Storage para água
+    for (let i = 0; i < localStorage.length; i++) {
+      const key = localStorage.key(i);
+
+      // Se a chave contém "agua_" e não é do dia atual, remove-a
+      if (key && key.startsWith('agua_') && key !== `agua_${currentDay}`) {
+        localStorage.removeItem(key);
+      }
     }
   }
 }

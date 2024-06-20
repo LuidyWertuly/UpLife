@@ -64,4 +64,40 @@
     </ion-accordion>
   </ion-accordion-group>
 
+
+  <ion-accordion-group expand="inset">
+    <ion-accordion>
+      <ion-item slot="header" color="light">
+        <ion-thumbnail slot="start">
+          <ion-icon name="water" class="water"></ion-icon>
+        </ion-thumbnail>
+        <ion-label>Contador de Água</ion-label>
+        <ion-label id="quantidadeAgua">{{ quantidadeAguaConsumida }} ml de 2500 ml</ion-label>
+      </ion-item>
+      <div class="ion-padding" slot="content" id="content-agua">
+        <!-- Conteúdo do acordeão -->
+        <div class="copo-container">
+          <div class="copo-item">
+            <ion-icon name="pint" class="copo"></ion-icon>
+            <ion-button expand="block" size="small" class="btn-mil ml-1" (click)="adicionarAgua(250)">+250ML</ion-button>
+          </div>
+          <div class="copo-item">
+            <ion-icon name="pint" class="copo"></ion-icon>
+            <ion-button expand="block" size="small" class="btn-mil ml-2" (click)="adicionarAgua(500)">+500ML</ion-button>
+          </div>
+          <div class="copo-item">
+            <ion-icon name="pint" class="copo"></ion-icon>
+            <ion-button expand="block" size="small" class="btn-mil ml-3" (click)="adicionarAgua(750)">+750ML</ion-button>
+          </div>
+          <div class="copo-item">
+            <ion-icon name="pint" class="copo"></ion-icon>
+            <ion-button expand="block" size="small" class="btn-mil ml-4" (click)="adicionarAgua(1000)">+1 Litro</ion-button>
+          </div>
+        </div>
+      </div>
+    </ion-accordion>
+  </ion-accordion-group>
+  
+  
+  
 </ion-content>
