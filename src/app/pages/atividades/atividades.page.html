@@ -1,40 +1,28 @@
+
 <link rel="stylesheet" type="text/css" href="http://fonts.googleapis.com/css?family=Ubuntu:regular,bold&subset=Latin">
+
 <ion-header>
   <ion-item class="barra-topo">
     
-  <ion-button fill="clear" class="icon" (click)="IrparaConfig()">
-    <ion-avatar>
-      <img alt="Foto de perfil" [src]="fotoperfil" />
-    </ion-avatar>
-  </ion-button>
-  
-  <ion-title class="titulo">Atividades</ion-title>
+    <ion-button fill="clear" class="icon" (click)="IrparaConfig()">
+      <ion-avatar>
+        <img alt="Foto de perfil" [src]="fotoperfil" />
+      </ion-avatar>
+    </ion-button>
+    
+    <ion-title class="titulo">Atividades</ion-title>
 
-  <ion-button fill="clear" class="icon" disabled>
-    <ion-icon name="add-sharp" class="oculto"></ion-icon>
-  </ion-button>
+    <ion-button fill="clear" class="icon" disabled>
+      <ion-icon name="add-sharp" class="oculto"></ion-icon>
+    </ion-button>
 
-</ion-item>
-</ion-header>
-
-<ion-header>
-  <!-- ... (seu código existente) ... -->
+  </ion-item>
 </ion-header>
 
 <ion-content>
-  <!-- <ion-card class="cardTituloExercicio" *ngFor="let exercicio of atividade; let i = index">
-    <ion-card-header *ngIf="isTargetDifferent(i)"> -->
-      <!-- <ion-card-title *ngIf="isTargetDifferent(i)">{{ exercicio.target }}</ion-card-title>
-      <ion-card-subtitle *ngIf="isTargetDifferent(i)"><p class="tituloExercicio">10 TREINOS DE</p></ion-card-subtitle>
-    </ion-card-header> -->
-  
-    <!-- <ion-card-content *ngIf="isTargetDifferent(i)">
-      Here's a small text description for the card content. Nothing more, nothing less. lorem
-    </ion-card-content> -->
-  <!-- </ion-card> -->
   
     <!-- Exibe os grupos de exercícios -->
-    <ng-container *ngFor="let grupo of gruposDeExercicios">
+  <ng-container *ngFor="let grupo of gruposDeExercicios">
     <ion-card>
       <ion-card-header>
         <ion-card-subtitle><p class="tituloExercicio">{{ grupo.exercicios.length }} TREINOS DE</p></ion-card-subtitle>
@@ -54,35 +42,6 @@
     </ion-card>
   </ng-container>
   
-
-
-
-
-
-  <!-- aqui em baixo é o card antigo simples -->
-  <!-- <ion-card class="cardExercicios" *ngFor="let exercicio of atividade; let i = index">
-    <ion-card-header *ngIf="isTargetDifferent(i)">
-      <ion-card-title *ngIf="isTargetDifferent(i)"> </ion-card-title>
-      <ion-img
-      style="height: 100px;"
-        src="../../../assets/atividadesImages/0088.jpeg"
-        alt="The Wisconsin State Capitol building in Madison, WI at night"
-      ></ion-img>
-      <ion-card-subtitle *ngIf="isTargetDifferent(i)">Card Subtitle</ion-card-subtitle>
-    </ion-card-header>
-  
-    <ion-card-content>
-      Here's a small text description for the card content. Nothing more, nothing less.
-    </ion-card-content>
-  </ion-card> -->
-  <!-- <ion-img
-  style="height: 100px;"
-    src="../../../assets/atividadesImages/0088.jpeg"
-    alt="The Wisconsin State Capitol building in Madison, WI at night"
-  ></ion-img> -->
-
-
-
   <ion-modal [isOpen]="DetalheExercicio" (ionModalDidDismiss)="fecharModal()">
     <ng-template>
       <ion-content class="modal-content">
@@ -121,3 +80,4 @@
     </ng-template>
   </ion-modal>
 
+</ion-content>

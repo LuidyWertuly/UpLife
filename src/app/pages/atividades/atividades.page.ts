@@ -21,7 +21,7 @@ export class AtividadesPage implements OnInit {
   constructor(private router: Router, private http: HttpClient, private firestore: AngularFirestore, private afAuth: AngularFireAuth) {}
 
   ngOnInit() {
-    this.http.get<any[]>('assets/atividades.json').subscribe(data => {
+    this.http.get<any[]>('assets/json/atividades.json').subscribe(data => {
       this.atividade = data;
       this.agrupamentoExerciciosPorTarget();
     });

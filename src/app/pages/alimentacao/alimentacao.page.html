@@ -1,20 +1,5 @@
 <ion-content>
 
-  <ion-item>
-    <ion-label>Descrição do Alimento</ion-label>
-    <ion-input [(ngModel)]="descricaoAlimento"></ion-input>
-  </ion-item>
-
-  <ion-button (click)="pesquisarAlimento(descricaoAlimento)">Pesquisar</ion-button>
-
-  <div *ngIf="alimento">
-    <h2>{{ alimento.description }}</h2>
-    <p>Carboidrato: {{ alimento.carbohydrate_g }}%</p>
-    <p>Energia: {{ alimento.energy_kcal }} kcal</p>
-    <p>Proteína: {{ alimento.protein_g }} g</p>
-    <p>Lipídios: {{ alimento.lipid_g }} g</p>
-  </div>
-
   <!-- Café Da Manhã -->
   <ion-accordion-group expand="inset">
     <ion-accordion>

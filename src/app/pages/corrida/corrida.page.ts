@@ -3,7 +3,6 @@ import { Router } from '@angular/router';
 import * as L from 'leaflet';
 import { AngularFireAuth } from '@angular/fire/compat/auth';
 import { AngularFirestore } from '@angular/fire/compat/firestore';
-import { AngularFireStorage } from '@angular/fire/compat/storage';
 
 @Component({
   selector: 'app-corrida',
@@ -23,7 +22,6 @@ export class CorridaPage implements OnInit, OnDestroy {
   startTime: any;
   pausedTime: number = 0;
   distance: number = 0;
-  polyline: any;
   lastPosition: L.LatLngTuple | null = null;
   intervalId: any;
   isPaused: boolean = false;
@@ -32,40 +30,64 @@ export class CorridaPage implements OnInit, OnDestroy {
   pesoUsuario: number = 0;
   calorias: number = 0;
 
-  userId: string | null = null;
+  userId: string = ''
 
-  constructor(
-    private router: Router,
-    private firestore: AngularFirestore,
-    private afAuth: AngularFireAuth,
-    private storage: AngularFireStorage
-  ) {}
+  tipoVoz: string = 'desativado'
+  distanciaComentario: boolean = false
+  duracaoComentario: boolean = false
+  ritmoComentario: boolean = false
+  frequenciaAudio: string = '1km'
+
+  constructor(private router: Router, private firestore: AngularFirestore, private afAuth: AngularFireAuth){}
 
   ngOnInit() {
     this.carregarMapa();
 
     this.afAuth.authState.subscribe((user) => {
       if (user) {
+
         this.userId = user.uid;
-        this.firestore
-          .collection('users', (ref) => ref.where('user_id', '==', user.uid))
-          .get()
-          .subscribe(
-            (snapshot) => {
+
+        this.firestore.collection('users', (ref) => ref.where('user_id', '==', user.uid)).get().subscribe((snapshot) => {
               if (!snapshot.empty) {
                 const doc = snapshot.docs[0];
                 const data: any = doc.data();
+
                 if (data && data.peso) {
                   this.pesoUsuario = data.peso;
                 }
+                
               }
             },
             (error) => {
               console.error('Erro ao buscar documento do usuário:', error);
             }
-          );
+        );
+
+        this.firestore.collection('configuracoesCorrida', (ref) => ref.where('user_id', '==', user.uid)).get().subscribe((snapshot) => {
+          
+          if (!snapshot.empty) {
+            const doc = snapshot.docs[0];
+            const data: any = doc.data();
+
+            if (data && data.tipoVoz) {
+              this.tipoVoz = data.tipoVoz;
+              this.distanciaComentario = data.distanciaComentario,
+              this.duracaoComentario = data.duracaoComentario
+              this.ritmoComentario = data.ritmoComentario
+              this.frequenciaAudio = data.frequenciaAudio
+            }
+            
+          }
+        },
+        (error) => {
+          console.error('Erro ao buscar documento do usuário:', error);
+        }
+    );
+
       }
     });
+
   }
 
   ngOnDestroy() {
@@ -103,7 +125,6 @@ export class CorridaPage implements OnInit, OnDestroy {
             fillOpacity: 1,
           }).addTo(this.map);
 
-          this.polyline = L.polyline([], { color: 'red' }).addTo(this.map);
           this.posicao();
         },
         (error) => {
@@ -137,14 +158,13 @@ export class CorridaPage implements OnInit, OnDestroy {
               this.lastPosition,
               pos
             );
-            this.distance += distanceIncrement;
+
+            this.distance += distanceIncrement;      
+
           }
 
           this.lastPosition = pos;
 
-          if (this.polyline) {
-            this.polyline.addLatLng(pos);
-          }
         },
         (error) => {
           console.error(error);
@@ -159,17 +179,13 @@ export class CorridaPage implements OnInit, OnDestroy {
   }
 
   comecarTreino() {
+    this.falar('Iniciando Treino');
     this.startTime = new Date().getTime();
     this.lastPosition = null;
     this.distance = 0;
     this.activeTime = 0;
     this.isPaused = false;
 
-    if (this.polyline) {
-      this.map.removeLayer(this.polyline);
-    }
-
-    this.polyline = L.polyline([], { color: 'red' }).addTo(this.map);
     this.modalTreino = true;
 
     this.intervalId = setInterval(() => {
@@ -211,6 +227,7 @@ export class CorridaPage implements OnInit, OnDestroy {
   }
 
   pausarTreino() {
+    this.falar('Pausando Treino');
     this.isPaused = true;
     if (this.intervalId) {
       clearInterval(this.intervalId);
@@ -221,6 +238,7 @@ export class CorridaPage implements OnInit, OnDestroy {
   }
 
   retomarTreino() {
+    this.falar('Continuando Treino');
     this.modalPause = false;
     this.isPaused = false;
     this.startTime = new Date().getTime() - this.activeTime - this.pausedTime;
@@ -233,6 +251,7 @@ export class CorridaPage implements OnInit, OnDestroy {
   }
 
   pararTreino() {
+    this.falar('Finalizando Treino');
     this.modalPause = false;
     this.confirmarModal = true;
 
@@ -294,4 +313,51 @@ export class CorridaPage implements OnInit, OnDestroy {
   recusarTreino() {
     this.confirmarModal = false;
   }
+
+  comentarios(informacao: string){
+    if(this.frequenciaAudio.includes('km')){
+      if(this.distanciaComentario){
+        this.falar(' 1 Quilômetro percorrido');
+      }
+
+      else if(this.duracaoComentario){
+        this.falar('Tempo 50 minutos');
+      }
+
+      else if(this.ritmoComentario){
+        this.falar('Ritmo médio 5');
+      }
+    }
+
+    else if(this.frequenciaAudio.includes('min')){
+      if(this.distanciaComentario){
+        this.falar(' 1 Quilômetro percorrido');
+      }
+
+      else if(this.duracaoComentario){
+        this.falar('Tempo 50 minutos');
+      }
+
+      else if(this.ritmoComentario){
+        this.falar('Ritmo médio 5');
+      }
+    }
+
+  }
+
+  falar(fala: string){
+    if (this.tipoVoz === 'desativado'){
+      return
+    }
+    
+    else{
+      let palavra = new SpeechSynthesisUtterance(fala);
+      let voz = speechSynthesis.getVoices();
+      palavra.voice = voz[0]
+      palavra.lang = "pt-BR"
+      speechSynthesis.speak(palavra);
+    }
+
+  }
+
 }
