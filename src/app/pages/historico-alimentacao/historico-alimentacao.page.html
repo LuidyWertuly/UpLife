@@ -1,72 +1,40 @@
-<ion-content>
- 
-  <!-- Café Da Manhã -->
-  <ion-accordion-group expand="inset">
-    <ion-accordion>
-      <ion-item slot="header" color="light">
-        <ion-thumbnail slot="start">
-          <ion-icon name="cafe" class="cafe"></ion-icon>
-        </ion-thumbnail>
-        <ion-label>16 de junho de 2024 às 22:12:30 UTC-3</ion-label>
-      </ion-item>
-      <div class="ion-padding" slot="content" id="content-cafe-da-manha">
-        <!-- Conteúdo do acordeão -->
-        <ion-accordion-group expand="inset">
-          <ion-accordion>
-            <ion-item slot="header" color="light">
-              <ion-thumbnail slot="start">
-                <ion-icon name="cafe" class="cafe"></ion-icon>
-              </ion-thumbnail>
-              <ion-label>Café Da Manhã</ion-label>
-            </ion-item>
-            
-            <div class="ion-padding" slot="content" id="content-cafe-da-manha">
-              <!-- Conteúdo do acordeão -->
-            </div>
-          </ion-accordion>
-        </ion-accordion-group>
-        <ion-accordion-group expand="inset">
-          <ion-accordion>
-            <ion-item slot="header" color="light">
-              <ion-thumbnail slot="start">
-                <ion-icon name="sunny" class="sunny"></ion-icon>
-              </ion-thumbnail>
-              <ion-label>Almoço</ion-label>
-            </ion-item>
-            <div class="ion-padding" slot="content" id="content-almoco">
-              <!-- Conteúdo do acordeão -->
-            </div>
-          </ion-accordion>
-          <ion-accordion-group expand="inset">
-            <ion-accordion>
-              <ion-item slot="header" color="light">
-                <ion-thumbnail slot="start">
-                  <ion-icon name="moon" class="moon"></ion-icon>
-                </ion-thumbnail>
-                <ion-label>Jantar</ion-label>
+<!-- Repetição para cada data -->
+<ion-accordion-group expand="inset">
+  <ion-accordion *ngFor="let data of datas">
+    <ion-item slot="header" color="light">
+      <ion-thumbnail slot="start">
+        <ion-icon name="calendar" class="calendar-icon"></ion-icon>
+      </ion-thumbnail>
+      <!-- Exibindo a data formatada -->
+      <ion-label><p>{{ alimentosPorData[data].data | date:'mediumDate' }}</p></ion-label>
+    </ion-item>
+    <div class="ion-padding" slot="content">
+      <!-- Repetição para cada tipo de refeição dentro da data -->
+      <ion-accordion-group expand="inset">
+        <ion-accordion *ngFor="let tipoRefeicao of ['Café Da Manhã', 'Almoço', 'Jantar', 'Lanches/Outros']">
+          <ion-item slot="header" color="light">
+            <ion-thumbnail slot="start">
+              <ion-icon [name]="getIconForRefeicao(tipoRefeicao).name" 
+                        [class]="getIconForRefeicao(tipoRefeicao).cssClass"></ion-icon>
+            </ion-thumbnail>
+            <ion-label>{{ tipoRefeicao }}</ion-label>
+          </ion-item>
+          <div class="ion-padding" slot="content" id="content-{{ getFormattedId(tipoRefeicao) }}">
+            <ion-list>
+              <ion-item *ngFor="let alimento of alimentosPorData[data].alimentosPorRefeicao[tipoRefeicao]">
+                <ion-label>
+                  <h2>{{ alimento.descricao }}</h2>
+                  <p>{{ alimento.dataHora | date:'medium' }}</p>
+                  <p>Calorias: {{ alimento.energia_kcal }} kcal</p>
+                  <p>Carboidratos: {{ alimento.carboidrato_g }} g</p>
+                  <p>Proteínas: {{ alimento.proteina_g }} g</p>
+                  <p>Gorduras: {{ alimento.gordura_g }} g</p>
+                </ion-label>
               </ion-item>
-              <div class="ion-padding" slot="content" id="content-jantar">
-                <!-- Conteúdo do acordeão -->
-              </div>
-            </ion-accordion>
-          </ion-accordion-group>
-          <ion-accordion-group expand="inset">
-            <ion-accordion>
-              <ion-item slot="header" color="light">
-                <ion-thumbnail slot="start">
-                  <ion-icon name="nutrition" class="nutrition"></ion-icon>
-                </ion-thumbnail>
-                <ion-label>Lanches/Outros</ion-label>
-              </ion-item>
-              <div class="ion-padding" slot="content" id="content-lanchesoutros">
-                <!-- Conteúdo do acordeão -->
-              </div>
-            </ion-accordion>
-          </ion-accordion-group>
-        </ion-accordion-group>
-      </div>
-    </ion-accordion>
-  </ion-accordion-group>
-
-  
-</ion-content>
+            </ion-list>
+          </div>
+        </ion-accordion>
+      </ion-accordion-group>
+    </div>
+  </ion-accordion>
+</ion-accordion-group>

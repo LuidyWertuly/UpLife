@@ -34,4 +34,24 @@
     color: #00ff00; /* Isso define a cor do ícone para verde */
     font-size: 25px; /* Ajuste o tamanho conforme necessário */
   }
+
+.water{
+  font-size: 45px;
+  color: #1ca3ec;
+  align-items: center;
+  margin-top: 8px;
+}
+
+.copo{
+  font-size: 45px;
+  color: #1ca3ec;
+  align-items: center;
+  margin-top: 8px;
+  justify-content: space-between;
   
+}
+
+.copo-container {
+  display: flex;
+  justify-content: space-between;
+}
