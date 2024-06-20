@@ -164,7 +164,8 @@ export class ConfiguracoesPage implements OnInit {
                   this.deleteCollectionByUserId('corridas', user.uid),
                   this.deleteCollectionByUserId('users', user.uid),
                   this.deleteCollectionByUserId('configuracoesCorrida', user.uid),
-                  this.deleteCollectionByUserId('alimentacao', user.uid)
+                  this.deleteCollectionByUserId('alimentacao', user.uid),
+                  this.deleteCollectionByUserId('agua', user.uid)
                 ])
               }).then(() => {
                 // console.log('Dados das coleções adicionais excluídos com sucesso.');
