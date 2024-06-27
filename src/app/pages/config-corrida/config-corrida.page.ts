@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { Location } from '@angular/common';
 import { AngularFireAuth } from '@angular/fire/compat/auth';
 import { AngularFirestore } from '@angular/fire/compat/firestore';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-config-corrida',
@@ -26,7 +27,7 @@ export class ConfigCorridaPage implements OnInit {
     meta: ''
   };
 
-  constructor(private location: Location, private afAuth: AngularFireAuth, private firestore: AngularFirestore) {}
+  constructor(private location: Location, private afAuth: AngularFireAuth, private firestore: AngularFirestore, private router: Router) {}
 
   ngOnInit() {
     this.carregarConfiguracoes();
@@ -99,6 +100,8 @@ export class ConfigCorridaPage implements OnInit {
           medidor: this.configuracoes.medidor,
           meta: this.configuracoes.meta
         });
+
+        this.router.navigate(['home/tabsCorrida/corrida']);
 
       } 
       

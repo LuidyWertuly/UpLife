@@ -23,7 +23,7 @@ export class InicioPage implements OnInit {
   constructor(private router: Router, private firestore: AngularFirestore, private afAuth: AngularFireAuth) { }
 
   ngOnInit() {
-    this.afAuth.authState.subscribe(user => {
+    this.afAuth.onAuthStateChanged(user => {
       if (user) {
         // Buscar dados do usuário
         this.firestore.collection('users', ref => ref.where('user_id', '==', user.uid)).get().subscribe(snapshot => {

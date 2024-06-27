@@ -1,5 +1,5 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
-import { Router } from '@angular/router';
+import { Router, NavigationEnd } from '@angular/router';
 import * as L from 'leaflet';
 import { AngularFireAuth } from '@angular/fire/compat/auth';
 import { AngularFirestore } from '@angular/fire/compat/firestore';
@@ -59,11 +59,27 @@ export class CorridaPage implements OnInit, OnDestroy {
   limiteVelocidade: number = 0.1;
   lastPositionTime: number | null = null;
 
-  constructor(private router: Router, private firestore: AngularFirestore, private afAuth: AngularFireAuth){}
+  constructor(private router: Router, private firestore: AngularFirestore, private afAuth: AngularFireAuth){
+    this.router.events.subscribe(event => {
+      if (event instanceof NavigationEnd && event.url === '/home/tabsCorrida/corrida') {
+        this.pegarDados()
+      }
+    });
+  }
 
   ngOnInit() {
     this.carregarMapa();
+    this.pegarDados()
+  }
 
+  ngOnDestroy() {
+    this.pararTreino();
+    if (this.watchId) {
+      Geolocation.clearWatch({ id: this.watchId });
+    }
+  }
+
+  pegarDados(){
     this.afAuth.authState.subscribe((user) => {
       if (user) {
 
@@ -121,14 +137,6 @@ export class CorridaPage implements OnInit, OnDestroy {
 
       }
     });
-
-  }
-
-  ngOnDestroy() {
-    this.pararTreino();
-    if (this.watchId) {
-      Geolocation.clearWatch({ id: this.watchId });
-    }
   }
 
   async carregarMapa() {
@@ -276,19 +284,16 @@ export class CorridaPage implements OnInit, OnDestroy {
   }
 
   iniciarContagemRegressiva(segundos: number) {
-    console.log(`Contagem regressiva iniciada: ${segundos} segundos`);
     this.modalContagemRegressiva = true;
     this.restante = segundos;
     
     const contagemInterval = setInterval(() => {
       if (this.restante > 0) {
-        console.log(`Restante: ${this.restante} segundos`);
         this.restante--;
       } 
       
       else {
         clearInterval(contagemInterval);
-        console.log('Contagem regressiva concluída. Iniciando treino...');
         this.modalContagemRegressiva = false;
         this.iniciarTreino();
       }
