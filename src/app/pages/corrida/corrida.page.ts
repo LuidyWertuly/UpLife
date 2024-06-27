@@ -54,8 +54,9 @@ export class CorridaPage implements OnInit, OnDestroy {
   intervalIdVelocidade: any;
   velocidadeAtual: number = 0;
   tempoParado: number = 0;
-  limiteTempoParado: number = 10000; // 10 segundos
-  limiteVelocidade: number = 0.1; // 0.1 m/s, ajuste conforme necessário
+  limiteTempoParado: number = 10000;
+  limiteVelocidade: number = 0.1;
+  lastPositionTime: number | null = null;
 
   constructor(private router: Router, private firestore: AngularFirestore, private afAuth: AngularFireAuth){}
 
@@ -198,19 +199,20 @@ export class CorridaPage implements OnInit, OnDestroy {
               position.coords.longitude,
             ];
   
-            this.userMarker.setLatLng(pos);
-            this.map.setView(pos);
-  
-            if (this.lastPosition) {
-              const distanceIncrement = this.map.distance(
-                this.lastPosition,
-                pos
-              );
+            const currentTime = new Date().getTime();
+            if (this.lastPosition && this.lastPositionTime) {
+              const distanceIncrement = this.map.distance(this.lastPosition, pos);
+              const timeIncrement = (currentTime - this.lastPositionTime) / 1000; // Em segundos
+              this.velocidadeAtual = distanceIncrement / timeIncrement;
   
               this.distance += distanceIncrement;
             }
   
             this.lastPosition = pos;
+            this.lastPositionTime = currentTime;
+            
+            this.userMarker.setLatLng(pos);
+            this.map.setView(pos);
   
             this.verificarComentario();
           }
@@ -225,19 +227,20 @@ export class CorridaPage implements OnInit, OnDestroy {
               position.coords.longitude,
             ];
   
-            this.userMarker.setLatLng(pos);
-            this.map.setView(pos);
-  
-            if (this.lastPosition) {
-              const distanceIncrement = this.map.distance(
-                this.lastPosition,
-                pos
-              );
+            const currentTime = new Date().getTime();
+            if (this.lastPosition && this.lastPositionTime) {
+              const distanceIncrement = this.map.distance(this.lastPosition, pos);
+              const timeIncrement = (currentTime - this.lastPositionTime) / 1000; // Em segundos
+              this.velocidadeAtual = distanceIncrement / timeIncrement;
   
               this.distance += distanceIncrement;
             }
   
             this.lastPosition = pos;
+            this.lastPositionTime = currentTime;
+  
+            this.userMarker.setLatLng(pos);
+            this.map.setView(pos);
   
             this.verificarComentario();
           },
@@ -370,6 +373,10 @@ export class CorridaPage implements OnInit, OnDestroy {
     this.pausedTime = new Date().getTime() - this.activeTime;
     this.modalTreino = false;
     this.modalPause = true;
+  
+    if (this.intervalIdVelocidade) {
+      clearInterval(this.intervalIdVelocidade);
+    }
   }
 
   retomarTreino() {
@@ -389,12 +396,15 @@ export class CorridaPage implements OnInit, OnDestroy {
     this.falar('Finalizando Treino');
     this.modalPause = false;
     this.confirmarModal = true;
-
+  
     if (this.intervalId) {
       clearInterval(this.intervalId);
     }
     if (this.watchId) {
       navigator.geolocation.clearWatch(this.watchId);
+    }
+    if (this.intervalIdVelocidade) {
+      clearInterval(this.intervalIdVelocidade);
     }
   }
 
