@@ -26,7 +26,7 @@ export class AtividadesPage implements OnInit {
       this.agrupamentoExerciciosPorTarget();
     });
 
-    this.afAuth.authState.subscribe(user => {
+    this.afAuth.onAuthStateChanged(user => {
       if (user) {
         this.firestore.collection('users', ref => ref.where('user_id', '==', user.uid)).get().subscribe(snapshot => {
           if (!snapshot.empty) {

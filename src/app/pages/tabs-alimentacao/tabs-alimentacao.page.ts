@@ -16,7 +16,7 @@ export class TabsAlimentacaoPage implements OnInit {
 
   ngOnInit() {
 
-    this.afAuth.authState.subscribe(user => {
+    this.afAuth.onAuthStateChanged(user => {
       
       if (user) {
         this.firestore.collection('users', ref => ref.where('user_id', '==', user.uid)).get().subscribe(snapshot => {

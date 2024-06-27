@@ -20,7 +20,7 @@ export class InicioPage implements OnInit {
 
   ngOnInit() {
 
-    this.afAuth.authState.subscribe(user => {
+    this.afAuth.onAuthStateChanged(user => {
       
       if (user) {
         this.firestore.collection('users', ref => ref.where('user_id', '==', user.uid)).get().subscribe(snapshot => {
@@ -48,7 +48,7 @@ export class InicioPage implements OnInit {
           console.error('Erro ao buscar documento do usuário:', error);
         });
 
-        this.afAuth.authState.subscribe(user => {
+        this.afAuth.onAuthStateChanged(user => {
           if (user) {
             this.firestore.collection('corridas', ref => ref.where('user_id', '==', user.uid).orderBy('data', 'desc').limit(1))
               .get()
@@ -74,7 +74,7 @@ export class InicioPage implements OnInit {
                   this.corrida = null;
                 }
               }, error => {
-                 console.error('Erro ao buscar última corrida:', error);
+                console.error('Erro ao buscar última corrida:', error);
               });
     
           } 

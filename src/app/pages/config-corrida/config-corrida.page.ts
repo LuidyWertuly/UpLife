@@ -12,6 +12,7 @@ import { AngularFirestore } from '@angular/fire/compat/firestore';
 export class ConfigCorridaPage implements OnInit {
 
   placeholderMeta: string = 'Desativado';
+  parametro: string = ''
 
   configuracoes: any = {
     pausaAutomatica: false,
@@ -65,14 +66,17 @@ export class ConfigCorridaPage implements OnInit {
     if (this.configuracoes.medidor === 'nenhum') {
       this.placeholderMeta = 'Desativado';
       this.configuracoes.meta = '';
+      this.parametro = ''
     } 
     
     else if (this.configuracoes.medidor === 'distancia') {
       this.placeholderMeta = 'Distância | KM';
+      this.parametro = '(Em quilômetros)'
     } 
     
     else if (this.configuracoes.medidor === 'duracao') {
       this.placeholderMeta = 'Duração | Min';
+      this.parametro = '(Em minutos)'
     }
   }
 

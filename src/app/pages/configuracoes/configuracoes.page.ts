@@ -15,8 +15,6 @@ export class ConfiguracoesPage implements OnInit {
 
   fotoperfil: string = 'https://firebasestorage.googleapis.com/v0/b/uplife-f9bce.appspot.com/o/avatar.jpg?alt=media&token=07e7956f-aed7-4f78-80ff-b41e60e7226a';
 
-  temaSelecionado: string = 'claro';
-
   nomeUsuario: string = '';
 
   @ViewChild('fileInput', { static: false }) fileInput!: ElementRef;
@@ -63,7 +61,7 @@ export class ConfiguracoesPage implements OnInit {
       } 
       
       else {
-        console.log('Usuário não autenticado');
+        // console.log('Usuário não autenticado');
       }
 
     }, error => {
@@ -74,10 +72,6 @@ export class ConfiguracoesPage implements OnInit {
 
   Voltarpagina(){
     this.location.back();
-  }
-
-  mudarTema(tema: string) {
-    this.temaSelecionado = tema;
   }
 
   IrparaConfigCorrida(){
