@@ -70,7 +70,7 @@ export class HistoricoAlimentacaoPage implements OnInit {
               });
 
               this.organizarAlimentosPorData();
-              console.log('Alimentos organizados por data:', this.alimentosPorData);
+              // console.log('Alimentos organizados por data:', this.alimentosPorData);
             },
             (error) => {
               console.error('Erro ao buscar alimentos do usuário:', error);
@@ -95,7 +95,7 @@ export class HistoricoAlimentacaoPage implements OnInit {
               });
 
               this.organizarAguaPorData(consumosAgua);
-              console.log('Consumo de água organizado por data:', this.aguaPorData);
+              // console.log('Consumo de água organizado por data:', this.aguaPorData);
             },
             (error) => {
               console.error('Erro ao buscar consumo de água do usuário:', error);
