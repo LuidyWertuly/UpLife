@@ -37,6 +37,8 @@ export class InicioPage implements OnInit {
 
             // Calcular ingestão restante
             this.calcularIngestaoRestante(data);
+            // Agendar o reset diário
+            this.scheduleIngestaoRestanteReset(data);
           } else {
             console.log('Documento do usuário não encontrado');
           }
@@ -181,4 +183,59 @@ export class InicioPage implements OnInit {
   irParaAdicionar() {
     this.router.navigate(['home/tabs-alimentacao/alimentacao']);
   }
+
+  // Função para resetar ingestão restante
+  resetarIngestaoRestante(data: any) {
+    // Calcular valores padrão baseados no objetivo do usuário
+    const peso = data.peso;
+    const altura = parseFloat(data.altura.toString().replace('.', ''));
+    const dtNascimento = new Date(data.DTnascimento);
+    const idade = this.calcularIdade(dtNascimento);
+    const objetivo = data.objetivo;
+
+    const alturaMetros = altura / 100;
+    const imc = peso / (alturaMetros * alturaMetros);
+    const pesoIdeal = imc * (alturaMetros * alturaMetros);
+    const tmb = 66 + (13.8 * pesoIdeal) + (5 * altura) - (6.8 * idade);
+
+    if (objetivo === 'ganharPeso') {
+      this.ingestaoRestante = tmb + 400;
+      this.proteinasRestantes = pesoIdeal * 2.4;
+      this.gordurasRestantes = pesoIdeal * 1.0;
+      this.carboidratosRestantes = pesoIdeal * 2.4;
+      this.caloriasRestantes = tmb + 400;
+    } else if (objetivo === 'manterPeso') {
+      this.ingestaoRestante = tmb;
+      this.proteinasRestantes = pesoIdeal * 2.0;
+      this.gordurasRestantes = pesoIdeal * 1.0;
+      this.carboidratosRestantes = pesoIdeal * 2.0;
+      this.caloriasRestantes = tmb;
+    } else if (objetivo === 'perderPeso') {
+      this.ingestaoRestante = tmb - 400;
+      this.proteinasRestantes = pesoIdeal * 1.8;
+      this.gordurasRestantes = pesoIdeal * 0.6;
+      this.carboidratosRestantes = pesoIdeal * 1.8;
+      this.caloriasRestantes = tmb - 400;
+    } else {
+      this.ingestaoRestante = tmb;
+      this.proteinasRestantes = pesoIdeal * 2.0;
+      this.gordurasRestantes = pesoIdeal * 1.0;
+      this.carboidratosRestantes = pesoIdeal * 2.0;
+      this.caloriasRestantes = tmb;
+    }
+  }
+
+  // Função para agendar o reset diário
+  scheduleIngestaoRestanteReset(data: any) {
+    const now = new Date();
+    const midnight = new Date(now.getFullYear(), now.getMonth(), now.getDate() + 1, 0, 0, 0, 0);
+    const msUntilMidnight = midnight.getTime() - now.getTime();
+
+    setTimeout(() => {
+      this.resetarIngestaoRestante(data);
+      this.scheduleIngestaoRestanteReset(data); // Reagendar para o próximo dia
+    }, msUntilMidnight);
+  }
+  
 }
+
