@@ -18,6 +18,15 @@ interface AlimentosPorData {
   [key: string]: { data: Date, alimentosPorRefeicao: { [key: string]: Alimento[] } };
 }
 
+interface ConsumoAgua {
+  quantidade_ml: number;
+  dataHora: Date;
+}
+
+interface AguaPorData {
+  [key: string]: { data: Date, consumo: ConsumoAgua[] };
+}
+
 @Component({
   selector: 'app-historico-alimentacao',
   templateUrl: './historico-alimentacao.page.html',
@@ -27,13 +36,17 @@ export class HistoricoAlimentacaoPage implements OnInit {
 
   alimentos: Alimento[] = [];
   alimentosPorData: AlimentosPorData = {};
-  datas: string[] = []; // Adiciona esta propriedade
+  datas: string[] = [];
+
+  aguaPorData: AguaPorData = {};
+  datasAgua: string[] = [];
 
   constructor(private firestore: AngularFirestore, private afAuth: AngularFireAuth) { }
 
   ngOnInit() {
     this.afAuth.authState.subscribe((user) => {
       if (user) {
+        // Buscar dados de alimentação
         this.firestore.collection('alimentacao', ref => ref.where('user_id', '==', user.uid))
           .get()
           .subscribe(
@@ -63,6 +76,31 @@ export class HistoricoAlimentacaoPage implements OnInit {
               console.error('Erro ao buscar alimentos do usuário:', error);
             }
           );
+
+        // Buscar dados de consumo de água
+        this.firestore.collection('agua', ref => ref.where('user_id', '==', user.uid))
+          .get()
+          .subscribe(
+            (snapshot) => {
+              const consumosAgua: ConsumoAgua[] = [];
+              snapshot.forEach(doc => {
+                const data: any = doc.data();
+
+                const consumo: ConsumoAgua = {
+                  quantidade_ml: data.quantidade_ml,
+                  dataHora: (data.dataHora as firebase.firestore.Timestamp).toDate()
+                };
+
+                consumosAgua.push(consumo);
+              });
+
+              this.organizarAguaPorData(consumosAgua);
+              console.log('Consumo de água organizado por data:', this.aguaPorData);
+            },
+            (error) => {
+              console.error('Erro ao buscar consumo de água do usuário:', error);
+            }
+          );
       }
     });
   }
@@ -87,6 +125,22 @@ export class HistoricoAlimentacaoPage implements OnInit {
     this.datas = Object.keys(this.alimentosPorData); // Atualiza a lista de datas
   }
 
+  organizarAguaPorData(consumos: ConsumoAgua[]) {
+    this.aguaPorData = {};
+
+    consumos.forEach(consumo => {
+      const dataString = consumo.dataHora.toISOString().split('T')[0]; // Converte a data para uma string no formato 'yyyy-mm-dd'
+      
+      if (!this.aguaPorData[dataString]) {
+        this.aguaPorData[dataString] = { data: consumo.dataHora, consumo: [] };
+      }
+
+      this.aguaPorData[dataString].consumo.push(consumo);
+    });
+
+    this.datasAgua = Object.keys(this.aguaPorData); // Atualiza a lista de datas para o consumo de água
+  }
+
   getIconForRefeicao(tipoRefeicao: string): { name: string, cssClass: string } {
     switch (tipoRefeicao) {
       case 'Café Da Manhã': return { name: 'cafe', cssClass: 'cafe' };
@@ -99,5 +153,9 @@ export class HistoricoAlimentacaoPage implements OnInit {
 
   getFormattedId(tipoRefeicao: string): string {
     return tipoRefeicao.toLowerCase().replace(/\//g, '');
+  }
+
+  getTotalAgua(consumos: ConsumoAgua[]): number {
+    return consumos.reduce((total, consumo) => total + consumo.quantidade_ml, 0);
   }
 }

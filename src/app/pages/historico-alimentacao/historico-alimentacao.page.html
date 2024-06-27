@@ -1,3 +1,4 @@
+<ion-content>
 <!-- Repetição para cada data -->
 <ion-accordion-group expand="inset">
   <ion-accordion *ngFor="let data of datas">
@@ -35,6 +36,30 @@
           </div>
         </ion-accordion>
       </ion-accordion-group>
+
+      <!-- Accordion para o Histórico do Contador de Água -->
+<ion-accordion-group expand="inset">
+  <ion-accordion *ngFor="let data of datasAgua">
+    <ion-item slot="header" color="light">
+      <ion-thumbnail slot="start">
+        <ion-icon name="water" class="water-icon"></ion-icon>
+      </ion-thumbnail>
+      <ion-label><p>{{ aguaPorData[data].data | date: 'mediumDate' }}</p></ion-label>
+      <ion-label>{{ getTotalAgua(aguaPorData[data].consumo) }} ml consumidos</ion-label>
+    </ion-item>
+    <div class="ion-padding" slot="content">
+      <ion-list>
+        <ion-item *ngFor="let consumo of aguaPorData[data].consumo">
+          <ion-label>
+            <p>{{ consumo.quantidade_ml }} ml às {{ consumo.dataHora | date: 'shortTime' }}</p>
+          </ion-label>
+        </ion-item>
+      </ion-list>
     </div>
   </ion-accordion>
 </ion-accordion-group>
+
+  </div>
+  </ion-accordion>
+</ion-accordion-group>
+</ion-content>
