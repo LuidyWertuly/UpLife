@@ -6,6 +6,7 @@ import { AngularFirestore } from '@angular/fire/compat/firestore';
 import { Geolocation } from '@capacitor/geolocation';
 import { Capacitor } from '@capacitor/core';
 import { Geolocation as CapacitorGeolocation } from '@capacitor/geolocation';
+import { TextToSpeech } from '@capacitor-community/text-to-speech';
 
 @Component({
   selector: 'app-corrida',
@@ -138,11 +139,15 @@ export class CorridaPage implements OnInit, OnDestroy {
         const hasPermission = await CapacitorGeolocation.requestPermissions();
         if (hasPermission.location === 'granted') {
           position = await CapacitorGeolocation.getCurrentPosition();
-        } else {
+        } 
+        
+        else {
           console.error('Geolocation permission not granted');
           return;
         }
-      } else {
+      } 
+      
+      else {
         position = await new Promise<GeolocationPosition>((resolve, reject) => {
           navigator.geolocation.getCurrentPosition(resolve, reject);
         });
@@ -175,7 +180,12 @@ export class CorridaPage implements OnInit, OnDestroy {
         fillOpacity: 1,
       }).addTo(this.map);
   
+      setTimeout(() => {
+        this.map.invalidateSize();
+    }, 100);
+
       this.posicao();
+
     } catch (error) {
       console.error('Error getting location', error);
     }
@@ -266,16 +276,19 @@ export class CorridaPage implements OnInit, OnDestroy {
   }
 
   iniciarContagemRegressiva(segundos: number) {
+    console.log(`Contagem regressiva iniciada: ${segundos} segundos`);
     this.modalContagemRegressiva = true;
     this.restante = segundos;
-  
+    
     const contagemInterval = setInterval(() => {
       if (this.restante > 0) {
+        console.log(`Restante: ${this.restante} segundos`);
         this.restante--;
-      }
+      } 
       
       else {
         clearInterval(contagemInterval);
+        console.log('Contagem regressiva concluída. Iniciando treino...');
         this.modalContagemRegressiva = false;
         this.iniciarTreino();
       }
@@ -288,6 +301,7 @@ export class CorridaPage implements OnInit, OnDestroy {
     this.lastPosition = null;
     this.distance = 0;
     this.activeTime = 0;
+    this.pausedTime = 0;
     this.isPaused = false;
 
     this.modalTreino = true;
@@ -517,16 +531,24 @@ export class CorridaPage implements OnInit, OnDestroy {
     }
   }
 
-  falar(fala: string) {
+  async falar(fala: string) {
     if (this.tipoVoz === 'desativado') {
       return;
     }
 
-    let palavra = new SpeechSynthesisUtterance(fala);
-    let voz = speechSynthesis.getVoices();
-    palavra.voice = voz[0];
-    palavra.lang = "pt-BR";
-    speechSynthesis.speak(palavra);
+    if (Capacitor.isNativePlatform()) {
+      await TextToSpeech.speak({
+        text: fala,
+        lang: 'pt-BR',
+        rate: 1.0
+      });
+    } 
+    
+    else {
+      const utterance = new SpeechSynthesisUtterance(fala);
+      utterance.lang = 'pt-BR';
+      speechSynthesis.speak(utterance);
+    }
   }
 
   pausarAutomaticamente() {
