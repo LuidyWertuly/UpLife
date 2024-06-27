@@ -122,7 +122,8 @@ export class HistoricoAlimentacaoPage implements OnInit {
       }
     });
 
-    this.datas = Object.keys(this.alimentosPorData); // Atualiza a lista de datas
+    // Atualiza a lista de datas e ordena em ordem decrescente
+    this.datas = Object.keys(this.alimentosPorData).sort((a, b) => new Date(b).getTime() - new Date(a).getTime());
   }
 
   organizarAguaPorData(consumos: ConsumoAgua[]) {
@@ -138,7 +139,8 @@ export class HistoricoAlimentacaoPage implements OnInit {
       this.aguaPorData[dataString].consumo.push(consumo);
     });
 
-    this.datasAgua = Object.keys(this.aguaPorData); // Atualiza a lista de datas para o consumo de água
+    // Atualiza a lista de datas para o consumo de água e ordena em ordem decrescente
+    this.datasAgua = Object.keys(this.aguaPorData).sort((a, b) => new Date(b).getTime() - new Date(a).getTime());
   }
 
   getIconForRefeicao(tipoRefeicao: string): { name: string, cssClass: string } {
