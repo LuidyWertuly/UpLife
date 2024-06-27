@@ -13,8 +13,6 @@ import { FormGroup, FormBuilder, Validators } from '@angular/forms';
 })
 export class EditarContaPage implements OnInit {
 
-  @ViewChild('modal') modal!: IonModal;
-
   @ViewChild('senhaModal') senhaModal!: IonModal;
 
   @ViewChild('emailModal') emailModal!: IonModal;
@@ -110,10 +108,13 @@ export class EditarContaPage implements OnInit {
       this.showToast('Alterações descartadas');
     }
 
-    this.modal.dismiss();
-
     setTimeout(() => {
       this.router.navigate(['home']);
+
+      setTimeout(() => {
+        window.location.reload();
+      }, 300);
+
     }, 300);
   }
 

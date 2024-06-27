@@ -1,4 +1,4 @@
-package io.ionic.starter;
+package up.uplife.starter;
 
 import com.getcapacitor.BridgeActivity;
 

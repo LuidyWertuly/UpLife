@@ -19,6 +19,7 @@
         <ion-icon slot="icon-only" name="footsteps-sharp"></ion-icon>
       </ion-button>
     </ion-row>
+
   </ion-grid>
 
   <ion-modal [isOpen]="modalTreino">
@@ -79,7 +80,7 @@
 
           <div class="pause-lado">
             <ion-title class="pauseValor">{{ calcularRitmoMedio() }}</ion-title>
-            <ion-title class="pauseDescricao">Pace médio</ion-title>
+            <ion-title class="pauseDescricao">Ritmo médio</ion-title>
           </div>
 
           <div class="divisor-vertical"></div>
@@ -102,6 +103,21 @@
               <ion-icon name="play-sharp"></ion-icon>
             </ion-button>
           </div>
+        </div>
+      </ion-content>
+    </ng-template>
+  </ion-modal>
+
+  <ion-modal [isOpen]="modalContagemRegressiva">
+    <ng-template>
+      <ion-content class="ion-padding">
+        <div class="treino-content">
+         
+          <div class="treino-linha">
+            <ion-title class="txtMaior">{{ restante }}</ion-title>
+            <ion-title class="descricao">Segundos</ion-title>
+          </div>
+
         </div>
       </ion-content>
     </ng-template>

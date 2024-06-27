@@ -1,10 +1,12 @@
 import { NgModule } from '@angular/core';
 import { PreloadAllModules, RouterModule, Routes } from '@angular/router';
+import { AuthGuard } from './auth.guard';
 
 const routes: Routes = [
   {
     path: 'home',
-    loadChildren: () => import('./home/home.module').then( m => m.HomePageModule)
+    loadChildren: () => import('./home/home.module').then( m => m.HomePageModule),
+    canActivate: [AuthGuard]
   },
   {
     path: '',
@@ -13,23 +15,28 @@ const routes: Routes = [
   },
   {
     path: 'configuracoes',
-    loadChildren: () => import('./pages/configuracoes/configuracoes.module').then( m => m.ConfiguracoesPageModule)
+    loadChildren: () => import('./pages/configuracoes/configuracoes.module').then( m => m.ConfiguracoesPageModule),
+    canActivate: [AuthGuard]
   },
   {
     path: 'historico',
-    loadChildren: () => import('./pages/historico/historico.module').then( m => m.HistoricoPageModule)
+    loadChildren: () => import('./pages/historico/historico.module').then( m => m.HistoricoPageModule),
+    canActivate: [AuthGuard]
   },
   {
     path: 'corrida',
-    loadChildren: () => import('./pages/corrida/corrida.module').then( m => m.CorridaPageModule)
+    loadChildren: () => import('./pages/corrida/corrida.module').then( m => m.CorridaPageModule),
+    canActivate: [AuthGuard]
   },
   {
     path: 'config-corrida',
-    loadChildren: () => import('./pages/config-corrida/config-corrida.module').then( m => m.ConfigCorridaPageModule)
+    loadChildren: () => import('./pages/config-corrida/config-corrida.module').then( m => m.ConfigCorridaPageModule),
+    canActivate: [AuthGuard]
   },
   {
     path: 'tabs-corrida',
-    loadChildren: () => import('./pages/tabs-corrida/tabs-corrida.module').then( m => m.TabsCorridaPageModule)
+    loadChildren: () => import('./pages/tabs-corrida/tabs-corrida.module').then( m => m.TabsCorridaPageModule),
+    canActivate: [AuthGuard]
   },
   {
     path: 'login',
@@ -49,7 +56,8 @@ const routes: Routes = [
   },
   {
     path: 'tenis',
-    loadChildren: () => import('./pages/tenis/tenis.module').then( m => m.TenisPageModule)
+    loadChildren: () => import('./pages/tenis/tenis.module').then( m => m.TenisPageModule),
+    canActivate: [AuthGuard]
   },
   {
     path: 'esqueci-senha',
@@ -57,15 +65,18 @@ const routes: Routes = [
   },
   {
     path: 'tabs-alimentacao',
-    loadChildren: () => import('./pages/tabs-alimentacao/tabs-alimentacao.module').then( m => m.TabsAlimentacaoPageModule)
+    loadChildren: () => import('./pages/tabs-alimentacao/tabs-alimentacao.module').then( m => m.TabsAlimentacaoPageModule),
+    canActivate: [AuthGuard]
   },
   {
     path: 'historico-alimentacao',
-    loadChildren: () => import('./pages/historico-alimentacao/historico-alimentacao.module').then( m => m.HistoricoAlimentacaoPageModule)
+    loadChildren: () => import('./pages/historico-alimentacao/historico-alimentacao.module').then( m => m.HistoricoAlimentacaoPageModule),
+    canActivate: [AuthGuard]
   },
   {
     path: 'editar-conta',
-    loadChildren: () => import('./pages/editar-conta/editar-conta.module').then( m => m.EditarContaPageModule)
+    loadChildren: () => import('./pages/editar-conta/editar-conta.module').then( m => m.EditarContaPageModule),
+    canActivate: [AuthGuard]
   },
   {
     path: 'mudar-email',

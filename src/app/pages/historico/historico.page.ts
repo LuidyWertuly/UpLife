@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { Router } from '@angular/router';
+import { Router, NavigationEnd } from '@angular/router';
 import { AngularFireAuth } from '@angular/fire/compat/auth';
 import { AngularFirestore } from '@angular/fire/compat/firestore';
 
@@ -9,7 +9,7 @@ interface Corrida {
   hora: string;
   distancia: string;
   duracao: string;
-  paceMedio: string;
+  ritmoMedio: string;
   calorias: number;
 }
 
@@ -24,9 +24,19 @@ export class HistoricoPage implements OnInit {
   confirmarModal = false;
   corridaIdExclusao: string = '';
 
-  constructor(private router: Router, private firestore: AngularFirestore, private afAuth: AngularFireAuth) {}
+  constructor(private router: Router, private firestore: AngularFirestore, private afAuth: AngularFireAuth){
+    this.router.events.subscribe(event => {
+      if (event instanceof NavigationEnd && event.url === '/home/tabsCorrida/historico') {
+        this.carregarCorridas();
+      }
+    });
+  }
 
   ngOnInit() {
+    this.carregarCorridas();
+  }
+
+  carregarCorridas() {
     this.afAuth.authState.subscribe((user) => {
       if (user) {
         this.firestore
@@ -43,7 +53,7 @@ export class HistoricoPage implements OnInit {
                   hora: data.hora,
                   distancia: data.distancia,
                   duracao: data.duracao,
-                  paceMedio: data.ritmoMedio,
+                  ritmoMedio: data.ritmoMedio,
                   calorias: data.calorias,
                 };
                 this.corridas.push(corrida);

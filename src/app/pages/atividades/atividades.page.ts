@@ -21,12 +21,12 @@ export class AtividadesPage implements OnInit {
   constructor(private router: Router, private http: HttpClient, private firestore: AngularFirestore, private afAuth: AngularFireAuth) {}
 
   ngOnInit() {
-    this.http.get<any[]>('assets/atividades.json').subscribe(data => {
+    this.http.get<any[]>('assets/json/atividades.json').subscribe(data => {
       this.atividade = data;
       this.agrupamentoExerciciosPorTarget();
     });
 
-    this.afAuth.authState.subscribe(user => {
+    this.afAuth.onAuthStateChanged(user => {
       if (user) {
         this.firestore.collection('users', ref => ref.where('user_id', '==', user.uid)).get().subscribe(snapshot => {
           if (!snapshot.empty) {

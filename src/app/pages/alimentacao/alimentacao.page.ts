@@ -81,7 +81,7 @@ export class AlimentacaoPage implements OnInit {
   
 
   carregarAlimentos() {
-    this.http.get('assets/TACO.json').subscribe((data: any) => {
+    this.http.get('assets/json/TACO.json').subscribe((data: any) => {
       this.alimentos = data;
     });
   }
